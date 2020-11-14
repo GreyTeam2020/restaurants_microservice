@@ -1,0 +1,10 @@
+version: "3.8"
+
+services:
+    users_microservice:
+        restart: always
+        build: .
+        ports:
+            - "5003:5003"
+        expose:
+            - "5003"
