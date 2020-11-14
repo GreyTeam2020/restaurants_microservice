@@ -185,6 +185,70 @@ paths:
             application/json:
               schema:
                   $ref: '#/components/schemas/NotFound'
+  /restaurants/{restaurant_id}/photos:
+    get:
+      tags:
+      - Photos
+      summary: Get the photos of a single restaurant
+      operationId: app.get_photos
+      parameters:
+      - name: restaurant_id
+        in: path
+        description: Restaurant's Unique identifier
+        required: true
+        schema:
+          pattern: ^[a-zA-Z0-9-]+$
+          type: string
+      responses:
+        200:
+          description: Return the photos of the restaurant
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Menus:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Photos'
+        404:
+          description: Photos not found
+          content: 
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/NotFound'
+  /restaurants/{restaurant_id}/reviews:
+    get:
+      tags:
+      - Reviws
+      summary: Get the reviews of a single restaurant
+      operationId: app.get_reviews
+      parameters:
+      - name: restaurant_id
+        in: path
+        description: Restaurant's Unique identifier
+        required: true
+        schema:
+          pattern: ^[a-zA-Z0-9-]+$
+          type: string
+      responses:
+        200:
+          description: Return the reviews of the restaurant
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Menus:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Reviews'
+        404:
+          description: Reviews not found
+          content: 
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/NotFound'
 components:
   schemas:
     NotFound:
@@ -350,6 +414,69 @@ components:
       - name
       - max_seats
       - available
+      - id
+      - restaurant_id
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Name of the table
+          example: "Table name"
+        max_seats:
+          type: integer
+          description: Maximun number of people at the table
+          example: 6
+        available:
+          type: boolean
+          description: The availability of th table
+          example: true
+        id:
+          type: integer
+          description: id of the table
+          example: 3
+        restaurant_id:
+          type: integer
+          description: restaurant id
+          example: 2
+    Photos: 
+      required:
+      - name
+      - max_seats
+      - available
+      - id
+      - restaurant_id
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Name of the table
+          example: "Table name"
+        max_seats:
+          type: integer
+          description: Maximun number of people at the table
+          example: 6
+        available:
+          type: boolean
+          description: The availability of th table
+          example: true
+        id:
+          type: integer
+          description: id of the table
+          example: 3
+        restaurant_id:
+          type: integer
+          description: restaurant id
+          example: 2
+    Reviews: 
+      required:
+      - stars
+      - review
+      - data
+      - reviewer_email
       - id
       - restaurant_id
       type: object
