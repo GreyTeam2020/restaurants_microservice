@@ -255,22 +255,15 @@ paths:
       - Restaurants
       summary: Create a restaurant
       operationId: app.create_restaurant
-      consumes:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "Information about restaurant to add are needed"
+      requestBody:
         required: true
-        schema:
-          $ref: "#/definitions/RestaurantId"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RestaurantId"
       responses:
         200:
-          description: Return ok
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Restaurant'
+          description: "Ok"
         500:
           description: Generic error
           content: 
@@ -338,7 +331,7 @@ components:
         rating:
           type: float
           description: Restaurant Rating
-          example: 3
+          example: 0
         owner_email:
           type: string
           description: Restaurant owner's email
@@ -449,7 +442,7 @@ components:
           minimum: 0
           maximum: 6
           description: Day of week
-          example: "3"
+          example: 3
         open_lunch:
           type: string
           format: date-time
@@ -570,16 +563,14 @@ components:
     RestaurantId:
       required:
       - restaurant
-      - restaurant_table
+      - restaurant_tables
       - menu
       - opening
       type: object
       properties:
         restaurant:
-          type: object
-          items:
-            $ref: '#/components/schemas/Restaurant'
-        restaurant_table:
+          $ref: '#/components/schemas/Restaurant'
+        restaurant_tables:
           type: integer
           description: number of table for 6 people
           example: 10
@@ -594,5 +585,39 @@ components:
         opening:
           type: array
           items:
-            $ref: '#/components/schemas/Openings'
-        
+            $ref: '#/components/schemas/OpeningsInsert'
+    OpeningsInsert: 
+      required:
+      - week_day
+      - open_lunch
+      - close_lunch
+      - open_dinner
+      - close_dinner
+      type: object
+      properties:
+        week_day:
+          type: integer
+          minimum: 0
+          maximum: 6
+          description: Day of week
+          example: 3
+        open_lunch:
+          type: string
+          format: date-time
+          description: Time when the restaurant opens for lunch
+          example: "11:30"
+        close_lunch:
+          type: string
+          format: date-time
+          description: Time when the restaurant closes for lunch
+          example: "15:30"
+        open_dinner:
+          type: string
+          format: date-time
+          description: Time when the restaurant opens for dinner
+          example: "19:00"
+        close_dinner:
+          type: string
+          format: date-time
+          description: Time when the restaurant closes for dinner
+          example: "22:00"
