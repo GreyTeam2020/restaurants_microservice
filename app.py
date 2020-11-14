@@ -5,6 +5,16 @@ import json
 
 db_session = None
 
+def _get_response(message: str, code: int, is_custom_obj: bool = False):
+    """
+    This method contains the code to make a new response for flask view
+    :param message: Message response
+    :param code: Code result
+    :return: a json object that look like {"result": "OK"}
+    """
+    if is_custom_obj is False:
+        return {"result": message}, code
+    return message, code
 
 def serialize(obj):
     return dict([(k, v) for k, v in obj.__dict__.items() if k[0] != "_"])
@@ -117,6 +127,21 @@ def get_reviews(restaurant_id):
         return error_message("404", "Reviews not found"), 404
     else:
         return list_obj_json("Reviews", reviews)
+
+
+def delete_dish(dish_id):
+    if dish_id is None:
+        return error_message("400", "dish_id not specified"), 400
+    RestaurantService.delete_dish(dish_id)
+    return _get_response("OK", 200)
+
+
+def delete_table(table_id):
+    if table_id is None:
+        return error_message("400", "table_id not specified"), 400
+    RestaurantService.delete_dish(table_id)
+    return _get_response("OK", 200)
+
 
 
 
