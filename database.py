@@ -46,11 +46,6 @@ class Restaurant(db):
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(Text(100))
 
-    """ CAN I REMOVE IT? WE DON'T USE IT ANYMORE?
-    likes = Column(
-        Integer
-    )  # will store the number of likes, periodically updated in background
-    """
     lat = Column(Float)  # restaurant latitude
     lon = Column(Float)  # restaurant longitude
 
