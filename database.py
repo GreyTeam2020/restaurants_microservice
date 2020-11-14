@@ -1,4 +1,15 @@
-from sqlalchemy import create_engine, Column, Integer, Float, Text, ForeignKey, Boolean, Time, DateTime, Unicode
+from sqlalchemy import (
+    create_engine,
+    Column,
+    Integer,
+    Float,
+    Text,
+    ForeignKey,
+    Boolean,
+    Time,
+    DateTime,
+    Unicode,
+)
 from sqlalchemy.orm import scoped_session, sessionmaker, relationship
 from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
@@ -52,7 +63,7 @@ class Restaurant(db):
     avg_time = Column(Integer, default=30)
     rating = Column(Float, default=0.0)
 
-    # resturant owner. 
+    # resturant owner.
     owner_email = Column(Unicode(128), nullable=False)
 
     def __init__(self, *args, **kw):
@@ -77,7 +88,6 @@ class RestaurantTable(db):
     )  # I don't understand the purpose of this field..
 
 
-
 class PhotoGallery(db):
     __tablename__ = "photo_gallery"
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -94,12 +104,10 @@ class OpeningHours(db):
     """
 
     __tablename__ = "opening_hours"
-    restaurant_id = Column(
-        Integer, ForeignKey("restaurant.id"), primary_key=True
-    )
+    restaurant_id = Column(Integer, ForeignKey("restaurant.id"), primary_key=True)
     restaurant = relationship("Restaurant", foreign_keys="OpeningHours.restaurant_id")
-    week_day = Column( Integer, primary_key=True)
-    open_lunch = Column( Time, default=datetime.utcnow)
+    week_day = Column(Integer, primary_key=True)
+    open_lunch = Column(Time, default=datetime.utcnow)
     close_lunch = Column(Time, default=datetime.utcnow)
     open_dinner = Column(Time, default=datetime.utcnow)
     close_dinner = Column(Time, default=datetime.utcnow)
@@ -144,7 +152,7 @@ class Review(db):
     __tablename__ = "review"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    
+
     # restaurant
     restaurant_id = Column(Integer, ForeignKey("restaurant.id"))
     restaurant = relationship("Restaurant", foreign_keys="Review.restaurant_id")
@@ -157,24 +165,13 @@ class Review(db):
     reviewer_email = Column(Unicode(128), nullable=False)
 
 
-
-
-
-
-
-
-
-
-
-
-
 def init_db(uri):
     engine = create_engine(uri, convert_unicode=True)
-    db_session = scoped_session(sessionmaker(autocommit=False, autoflush=False,
-                                             bind=engine))
+    db_session = scoped_session(
+        sessionmaker(autocommit=False, autoflush=False, bind=engine)
+    )
     db.query = db_session.query_property()
     db.metadata.create_all(bind=engine)
-    
 
     q = db_session.query(Restaurant).filter(Restaurant.id == 1)
     restaurant = q.first()
@@ -188,7 +185,7 @@ def init_db(uri):
         first_restaurant.owner_email = "ham.burger@email.com"
         db_session.add(first_restaurant)
         db_session.commit()
-   
+
     q = db_session.query(Restaurant).filter(Restaurant.id == 2)
     restaurant = q.first()
     if restaurant is None:
@@ -221,6 +218,5 @@ def init_db(uri):
         second_menu.description = "oriental food"
         db_session.add(second_menu)
         db_session.commit()
-
 
     return db_session
