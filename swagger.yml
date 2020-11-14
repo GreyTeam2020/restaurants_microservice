@@ -29,7 +29,7 @@ paths:
           content: 
             application/json:
               schema:
-                  $ref: '#/components/schemas/NotFound'
+                  $ref: '#/components/schemas/Error'
   /restaurants/{restaurant_id}:
     get:
       tags:
@@ -56,7 +56,7 @@ paths:
           content: 
             application/json:
               schema:
-                  $ref: '#/components/schemas/NotFound'
+                  $ref: '#/components/schemas/Error'
   /restaurants/{restaurant_id}/menu:
     get:
       tags:
@@ -88,7 +88,7 @@ paths:
           content: 
             application/json:
               schema:
-                  $ref: '#/components/schemas/NotFound'
+                  $ref: '#/components/schemas/Error'
   /restaurants/{restaurant_id}/dishes:
     get:
       tags:
@@ -120,7 +120,7 @@ paths:
           content: 
             application/json:
               schema:
-                  $ref: '#/components/schemas/NotFound'
+                  $ref: '#/components/schemas/Error'
   /restaurants/{restaurant_id}/openings:
     get:
       tags:
@@ -152,7 +152,7 @@ paths:
           content: 
             application/json:
               schema:
-                  $ref: '#/components/schemas/NotFound'
+                  $ref: '#/components/schemas/Error'
   /restaurants/{restaurant_id}/tables:
     get:
       tags:
@@ -184,7 +184,7 @@ paths:
           content: 
             application/json:
               schema:
-                  $ref: '#/components/schemas/NotFound'
+                  $ref: '#/components/schemas/Error'
   /restaurants/{restaurant_id}/photos:
     get:
       tags:
@@ -216,7 +216,7 @@ paths:
           content: 
             application/json:
               schema:
-                  $ref: '#/components/schemas/NotFound'
+                  $ref: '#/components/schemas/Error'
   /restaurants/{restaurant_id}/reviews:
     get:
       tags:
@@ -248,10 +248,38 @@ paths:
           content: 
             application/json:
               schema:
-                  $ref: '#/components/schemas/NotFound'
+                  $ref: '#/components/schemas/Error'
+  /restaurants/create:
+    post:
+      tags:
+      - Restaurants
+      summary: Create a restaurant
+      operationId: app.create_restaurant
+      consumes:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Information about restaurant to add are needed"
+        required: true
+        schema:
+          $ref: "#/definitions/RestaurantId"
+      responses:
+        200:
+          description: Return ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Restaurant'
+        500:
+          description: Generic error
+          content: 
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
 components:
   schemas:
-    NotFound:
+    Error:
       required:
         - code
         - message
@@ -539,4 +567,32 @@ components:
           type: integer
           description: restaurant id
           example: 2
+    RestaurantId:
+      required:
+      - restaurant
+      - restaurant_table
+      - menu
+      - opening
+      type: object
+      properties:
+        restaurant:
+          type: object
+          items:
+            $ref: '#/components/schemas/Restaurant'
+        restaurant_table:
+          type: integer
+          description: number of table for 6 people
+          example: 10
+        menu:
+          type: array
+          items:
+            type: string
+            maxLength: 100
+            minLength: 1
+            description: Cuisine type
+            example: 'Italian food'
+        opening:
+          type: array
+          items:
+            $ref: '#/components/schemas/Openings'
         

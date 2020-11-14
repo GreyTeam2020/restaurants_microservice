@@ -1,5 +1,5 @@
 import connexion, logging, database
-from flask import jsonify
+from flask import jsonify, request
 from services.restaurant_service import RestaurantService
 import json
 
@@ -130,6 +130,44 @@ def get_reviews(restaurant_id):
     else:
         return list_obj_json("Reviews", reviews)
 
+
+def create_restaurant():
+    
+    json = request.get_json()
+    email = json["email"]
+    phone = json["phone"]
+    user = UserService.user_is_present(db_session, email, phone)
+    if user is not None:
+        return _get_response(
+            "User with email {} and/or phone already exist".format(email, phone),
+            500,
+        )
+    user = UserService.create_user(db_session, json)
+    if user is not None:
+        return _get_response("OK", 200)
+    else:
+        return _get_response(
+            "User not created because we have an error on server", 500
+        )
+    
+    
+    pass
+
+
+def create_table():
+    pass
+
+
+def create_dish():
+    pass
+
+
+def create_photo():
+    pass
+
+
+def create_review():
+    pass
 
 
 logging.basicConfig(level=logging.INFO)
