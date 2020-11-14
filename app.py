@@ -93,6 +93,33 @@ def get_tables(restaurant_id):
         return list_obj_json("Tables", tables)
 
 
+def get_photos(restaurant_id):
+
+    restaurant = RestaurantService.get_restaurant(db_session, restaurant_id)
+    if restaurant is None:
+        return error_message("404", "Restaurant not found"), 404
+
+    photos = RestaurantService.get_photos(db_session, restaurant_id)
+    if len(photos) == 0:
+        return error_message("404", "Photos not found"), 404
+    else:
+        return list_obj_json("Photos", photos)
+
+
+def get_reviews(restaurant_id):
+
+    restaurant = RestaurantService.get_restaurant(db_session, restaurant_id)
+    if restaurant is None:
+        return error_message("404", "Restaurant not found"), 404
+
+    reviews = RestaurantService.get_reviews(db_session, restaurant_id)
+    if len(reviews) == 0:
+        return error_message("404", "Reviews not found"), 404
+    else:
+        return list_obj_json("Reviews", reviews)
+
+
+
 logging.basicConfig(level=logging.INFO)
 db_session = database.init_db("sqlite:///restaurant.db")
 app = connexion.App(__name__)
@@ -106,4 +133,4 @@ def shutdown_session(exception=None):
 
 
 if __name__ == "__main__":
-    app.run(port=8080)
+    app.run(port=5003)

@@ -1,5 +1,13 @@
 from flask import current_app
-from database import Restaurant, Menu, MenuDish, OpeningHours, RestaurantTable
+from database import (
+    Restaurant,
+    Menu,
+    MenuDish,
+    OpeningHours,
+    RestaurantTable,
+    PhotoGallery,
+    Review,
+)
 
 
 class RestaurantService:
@@ -67,5 +75,27 @@ class RestaurantService:
             db_session.query(RestaurantTable)
             .filter(restaurant_id == RestaurantTable.restaurant_id)
             .all()
+        )
+        return tables
+
+    @staticmethod
+    def get_photos(db_session, restaurant_id):
+        """
+        Method to return photos of the specified restaurant 
+        """
+        tables = (
+            db_session.query(PhotoGallery)
+            .filter(restaurant_id == PhotoGallery.restaurant_id)
+            .all()
+        )
+        return tables
+
+    @staticmethod
+    def get_reviews(db_session, restaurant_id):
+        """
+        Method to return photos of the specified restaurant 
+        """
+        tables = (
+            db_session.query(Review).filter(restaurant_id == Review.restaurant_id).all()
         )
         return tables
