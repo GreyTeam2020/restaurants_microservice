@@ -204,6 +204,27 @@ def init_db(uri):
         db_session.add(first_menu)
         db_session.commit()
 
+        q = db_session.query(MenuPhotoGallery).filter(MenuPhotoGallery.id == 1)
+        menu_photo = q.first()
+        if menu_photo is None:
+            first_menu_photo = MenuPhotoGallery()
+            first_menu_photo.menu_id = 1
+            first_menu_photo.url = "http://photo1.com"
+            first_menu_photo.caption = "Photo 1"
+            db_session.add(first_menu_photo)
+            db_session.commit()
+        
+        q = db_session.query(MenuPhotoGallery).filter(MenuPhotoGallery.id == 2)
+        menu_photo = q.first()
+        if menu_photo is None:
+            first_menu_photo = MenuPhotoGallery()
+            first_menu_photo.menu_id = 1
+            first_menu_photo.url = "http://photo2.com"
+            first_menu_photo.caption = "Photo 2"
+            db_session.add(first_menu_photo)
+            db_session.commit()
+    
+
     q = db_session.query(Menu).filter(Menu.id == 2)
     menu = q.first()
     if menu is None:

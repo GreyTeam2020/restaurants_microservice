@@ -7,6 +7,7 @@ from database import (
     RestaurantTable,
     PhotoGallery,
     Review,
+    MenuPhotoGallery
 )
 
 
@@ -41,6 +42,16 @@ class RestaurantService:
         """
         menus = db_session.query(Menu).filter(restaurant_id == Menu.restaurant_id).all()
         return menus
+
+    @staticmethod
+    def get_menu_photos(db_session, menu_id):
+        """
+        Method to return photos of the specified restaurant 
+        """
+        tables = (
+            db_session.query(MenuPhotoGallery).filter(menu_id == MenuPhotoGallery.menu_id).all()
+        )
+        return tables
 
     @staticmethod
     def get_dishes(db_session, restaurant_id):
