@@ -5,6 +5,16 @@ import json
 
 db_session = None
 
+def _get_response(message: str, code: int, is_custom_obj: bool = False):
+    """
+    This method contains the code to make a new response for flask view
+    :param message: Message response
+    :param code: Code result
+    :return: a json object that look like {"result": "OK"}
+    """
+    if is_custom_obj is False:
+        return {"result": message}, code
+    return message, code
 
 def serialize(obj):
     return dict([(k, v) for k, v in obj.__dict__.items() if k[0] != "_"])
@@ -132,7 +142,7 @@ def get_reviews(restaurant_id):
 
 
 def create_restaurant():
-    
+
     json = request.get_json()
     email = json["email"]
     phone = json["phone"]
@@ -149,8 +159,8 @@ def create_restaurant():
         return _get_response(
             "User not created because we have an error on server", 500
         )
-    
-    
+
+
     pass
 
 
@@ -168,6 +178,21 @@ def create_photo():
 
 def create_review():
     pass
+
+def delete_dish(dish_id):
+    if dish_id is None:
+        return error_message("400", "dish_id not specified"), 400
+    RestaurantService.delete_dish(db_session, dish_id)
+    return _get_response("OK", 200)
+
+
+def delete_table(table_id):
+    if table_id is None:
+        return error_message("400", "table_id not specified"), 400
+    RestaurantService.delete_table(db_session, table_id)
+    return _get_response("OK", 200)
+
+
 
 
 logging.basicConfig(level=logging.INFO)
