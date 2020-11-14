@@ -74,6 +74,7 @@ class RestaurantTable(db):
         "Restaurant", foreign_keys="RestaurantTable.restaurant_id"
     )
 
+    "Can i remove it? i think we don't use it"
     name = Column(Text(100))  # table name
 
     max_seats = Column(Integer)  # max seats of the table
