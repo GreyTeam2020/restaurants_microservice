@@ -61,7 +61,19 @@ def get_menus(restaurant_id):
     if len(menus) == 0:
         return error_message("404", "Menus not found"), 404
     else:
-        return list_obj_json("menus", menus)
+
+        all_menus = []
+        #get menu photos for each menu
+        for menu in menus:
+            photos = RestaurantService.get_menu_photos(db_session, menu.id)
+            json_menu = serialize(menu)
+            photos_list=[]
+            for photo in photos:
+                photos_list.append(serialize(photo))
+            json_menu["photos"] = photos_list
+            all_menus.append(json_menu)
+        
+        return json.loads(json.dumps({"menus": all_menus}))
 
 
 def get_dishes(restaurant_id):

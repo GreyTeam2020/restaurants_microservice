@@ -220,7 +220,7 @@ paths:
   /restaurants/{restaurant_id}/reviews:
     get:
       tags:
-      - Reviws
+      - Reviews
       summary: Get the reviews of a single restaurant
       operationId: app.get_reviews
       parameters:
@@ -321,6 +321,7 @@ components:
       - cuisine
       - id
       - restaurant_id
+      - photos
       type: object
       properties:
         description:
@@ -342,6 +343,38 @@ components:
         restaurant_id:
           type: integer
           description: restaurant id
+          example: 2
+        photos:
+          type: array
+          items:
+            $ref: '#/components/schemas/MenuPhotos'
+    MenuPhotos: 
+      required:
+      - url
+      - caption
+      - id
+      - menu_id
+      type: object
+      properties:
+        url:
+          maxLength: 255
+          minLength: 1
+          type: string
+          description: URL of the photo
+          example: "http://photo1.it"
+        caption:
+          type: string
+          maxLength: 200
+          minLength: 1
+          description: Description
+          example: "Photo 1"
+        id:
+          type: integer
+          description: id of the photo
+          example: 3
+        menu_id:
+          type: integer
+          description: menu id
           example: 2
     Dishes: 
       required:
@@ -442,30 +475,27 @@ components:
           example: 2
     Photos: 
       required:
-      - name
-      - max_seats
-      - available
+      - url
+      - caption
       - id
       - restaurant_id
       type: object
       properties:
-        name:
-          maxLength: 100
+        url:
+          maxLength: 255
           minLength: 1
           type: string
-          description: Name of the table
-          example: "Table name"
-        max_seats:
-          type: integer
-          description: Maximun number of people at the table
-          example: 6
-        available:
-          type: boolean
-          description: The availability of th table
-          example: true
+          description: URL of the photo
+          example: "http://photo.it"
+        caption:
+          type: string
+          maxLength: 200
+          minLength: 1
+          description: Description
+          example: "Restaurant!"
         id:
           type: integer
-          description: id of the table
+          description: id of the photo
           example: 3
         restaurant_id:
           type: integer
@@ -481,23 +511,29 @@ components:
       - restaurant_id
       type: object
       properties:
-        name:
-          maxLength: 100
-          minLength: 1
+        stars:
+          type: object
+          properties: 
+            impl:
+              type: string
+          description: Stars of the review
+          example: "Example not available"
+        review:
           type: string
-          description: Name of the table
-          example: "Table name"
-        max_seats:
-          type: integer
-          description: Maximun number of people at the table
-          example: 6
-        available:
-          type: boolean
-          description: The availability of th table
-          example: true
+          description: Review of the restaurant
+          example: "Nice place!"
+        data:
+          type: string
+          format: date-time
+          description: when a user write a review for the restaurant
+          example: "15/06/2020 14:00"
+        reviewer_email:
+          type: string
+          description: Email of user who leave the review
+          example: "nick.miller@email.com"
         id:
           type: integer
-          description: id of the table
+          description: id of the review
           example: 3
         restaurant_id:
           type: integer
