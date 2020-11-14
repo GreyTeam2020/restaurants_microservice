@@ -1,0 +1,379 @@
+openapi: 3.0.1
+info:
+  title: Restaurants Service API
+  description: Restaurants from GoOutSafe with Microservices
+  version: "0.1"
+servers:
+- url: /
+paths:
+  /restaurants:
+    get:
+      tags:
+      - Restaurants
+      summary: Get all restaurants
+      operationId: app.get_restaurants
+      responses:
+        200:
+          description: Return all restaurants
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  restaurants:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Restaurant'
+        404:
+          description: Restaurants not found
+          content: 
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/NotFound'
+  /restaurants/{restaurant_id}:
+    get:
+      tags:
+      - Restaurants
+      summary: Get a single restaurant
+      operationId: app.get_restaurant
+      parameters:
+      - name: restaurant_id
+        in: path
+        description: Restaurant's Unique identifier
+        required: true
+        schema:
+          pattern: ^[a-zA-Z0-9-]+$
+          type: string
+      responses:
+        200:
+          description: Return restaurant
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Restaurant'
+        404:
+          description: Restaurant not found
+          content: 
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/NotFound'
+  /restaurants/{restaurant_id}/menu:
+    get:
+      tags:
+      - Menu
+      summary: Get the menu of a single restaurant
+      operationId: app.get_menus
+      parameters:
+      - name: restaurant_id
+        in: path
+        description: Restaurant's Unique identifier
+        required: true
+        schema:
+          pattern: ^[a-zA-Z0-9-]+$
+          type: string
+      responses:
+        200:
+          description: Return the menus of the restaurant
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Menus:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Menus'
+        404:
+          description: Menu not found
+          content: 
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/NotFound'
+  /restaurants/{restaurant_id}/dishes:
+    get:
+      tags:
+      - Dishes
+      summary: Get the dishes of a single restaurant
+      operationId: app.get_dishes
+      parameters:
+      - name: restaurant_id
+        in: path
+        description: Restaurant's Unique identifier
+        required: true
+        schema:
+          pattern: ^[a-zA-Z0-9-]+$
+          type: string
+      responses:
+        200:
+          description: Return the dishes of the restaurant
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Menus:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Dishes'
+        404:
+          description: Dishes not found
+          content: 
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/NotFound'
+  /restaurants/{restaurant_id}/openings:
+    get:
+      tags:
+      - Opening Hours
+      summary: Get the opening hours of a single restaurant
+      operationId: app.get_openings
+      parameters:
+      - name: restaurant_id
+        in: path
+        description: Restaurant's Unique identifier
+        required: true
+        schema:
+          pattern: ^[a-zA-Z0-9-]+$
+          type: string
+      responses:
+        200:
+          description: Return the opening hours of the restaurant
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Menus:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Openings'
+        404:
+          description: Opening hours not found
+          content: 
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/NotFound'
+  /restaurants/{restaurant_id}/tables:
+    get:
+      tags:
+      - Tables
+      summary: Get the tables of a single restaurant
+      operationId: app.get_tables
+      parameters:
+      - name: restaurant_id
+        in: path
+        description: Restaurant's Unique identifier
+        required: true
+        schema:
+          pattern: ^[a-zA-Z0-9-]+$
+          type: string
+      responses:
+        200:
+          description: Return the tables of the restaurant
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Menus:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Tables'
+        404:
+          description: Tables not found
+          content: 
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/NotFound'
+components:
+  schemas:
+    NotFound:
+      required:
+        - code
+        - message
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+    Restaurant:
+      required:
+      - name
+      - lat
+      - lon
+      - phone
+      - covid_measures
+      - avg_time
+      - rating
+      - owner_email
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier
+          readOnly: true
+          example: 123
+        name:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Restaurant's name
+          example: "My Pizza Restaurant"
+        lat:
+          type: float
+          description: Restaurant Latitude
+          example: 42.42
+        lon:
+          type: float
+          description: Restaurant Longitude
+          example: 42.42
+        phone:
+          type: integer
+          minLength: 5
+          maxLength: 50
+          description: Restaurant Phone Number
+          example: 050123456
+        covid_measures:
+          type: string
+          maxLength: 500
+          description: Covid measures adopted in restaurant
+          example: "Distance between tables"
+        avg_time:
+          type: integer
+          description: Restaurant avg time
+          example: 42
+        rating:
+          type: float
+          description: Restaurant Rating
+          example: 3
+        owner_email:
+          type: string
+          description: Restaurant owner's email
+          example: "mario.rossi@mail.it"
+    Menus: 
+      required:
+      - description
+      - cuisine
+      - id
+      - restaurant_id
+      type: object
+      properties:
+        description:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Description of the menu
+          example: "Typical plates"
+        cuisine:
+          type: string
+          minLength: 5
+          maxLength: 50
+          description: cuisine type
+          example: "Italian food"
+        id:
+          type: integer
+          description: id of the menu
+          example: 3
+        restaurant_id:
+          type: integer
+          description: restaurant id
+          example: 2
+    Dishes: 
+      required:
+      - name
+      - price
+      - id
+      - restaurant_id
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Name of the dish
+          example: "Pizza margherita"
+        price:
+          type: float
+          description: Price of the plate
+          example: "10.50"
+        id:
+          type: integer
+          description: id of the dish
+          example: 3
+        restaurant_id:
+          type: integer
+          description: restaurant id
+          example: 2
+    Openings: 
+      required:
+      - restaurant_id
+      - week_day
+      - open_lunch
+      - close_lunch
+      - open_dinner
+      - close_dinner
+      type: object
+      properties:
+        restaurant_id:
+          type: integer
+          description: restaurant id
+          example: 2
+        week_day:
+          type: integer
+          minimum: 0
+          maximum: 6
+          description: Day of week
+          example: "3"
+        open_lunch:
+          type: string
+          format: date-time
+          description: Time when the restaurant opens for lunch
+          example: "11:30"
+        close_lunch:
+          type: string
+          format: date-time
+          description: Time when the restaurant closes for lunch
+          example: "15:30"
+        open_dinner:
+          type: string
+          format: date-time
+          description: Time when the restaurant opens for dinner
+          example: "19:00"
+        close_dinner:
+          type: string
+          format: date-time
+          description: Time when the restaurant closes for dinner
+          example: "22:00"
+    Tables: 
+      required:
+      - name
+      - max_seats
+      - available
+      - id
+      - restaurant_id
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Name of the table
+          example: "Table name"
+        max_seats:
+          type: integer
+          description: Maximun number of people at the table
+          example: 6
+        available:
+          type: boolean
+          description: The availability of th table
+          example: true
+        id:
+          type: integer
+          description: id of the table
+          example: 3
+        restaurant_id:
+          type: integer
+          description: restaurant id
+          example: 2
+        
