@@ -29,7 +29,7 @@ paths:
           content: 
             application/json:
               schema:
-                  $ref: '#/components/schemas/NotFound'
+                  $ref: '#/components/schemas/Error'
   /restaurants/{restaurant_id}:
     get:
       tags:
@@ -56,7 +56,7 @@ paths:
           content: 
             application/json:
               schema:
-                  $ref: '#/components/schemas/NotFound'
+                  $ref: '#/components/schemas/Error'
   /restaurants/{restaurant_id}/menu:
     get:
       tags:
@@ -88,7 +88,7 @@ paths:
           content: 
             application/json:
               schema:
-                  $ref: '#/components/schemas/NotFound'
+                  $ref: '#/components/schemas/Error'
   /restaurants/{restaurant_id}/dishes:
     get:
       tags:
@@ -120,7 +120,7 @@ paths:
           content: 
             application/json:
               schema:
-                  $ref: '#/components/schemas/NotFound'
+                  $ref: '#/components/schemas/Error'
   /restaurants/{restaurant_id}/openings:
     get:
       tags:
@@ -152,7 +152,7 @@ paths:
           content: 
             application/json:
               schema:
-                  $ref: '#/components/schemas/NotFound'
+                  $ref: '#/components/schemas/Error'
   /restaurants/{restaurant_id}/tables:
     get:
       tags:
@@ -184,7 +184,7 @@ paths:
           content: 
             application/json:
               schema:
-                  $ref: '#/components/schemas/NotFound'
+                  $ref: '#/components/schemas/Error'
   /restaurants/{restaurant_id}/photos:
     get:
       tags:
@@ -216,7 +216,7 @@ paths:
           content: 
             application/json:
               schema:
-                  $ref: '#/components/schemas/NotFound'
+                  $ref: '#/components/schemas/Error'
   /restaurants/{restaurant_id}/reviews:
     get:
       tags:
@@ -248,7 +248,28 @@ paths:
           content: 
             application/json:
               schema:
-                  $ref: '#/components/schemas/NotFound'
+                  $ref: '#/components/schemas/Error'
+  /restaurants/create:
+    post:
+      tags:
+      - Restaurants
+      summary: Create a restaurant
+      operationId: app.create_restaurant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RestaurantId"
+      responses:
+        200:
+          description: "Ok"
+        500:
+          description: Generic error
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
 
   /restaurant/menu/{dish_id}:
     delete:
@@ -306,7 +327,7 @@ paths:
 
 components:
   schemas:
-    NotFound:
+    Error:
       required:
         - code
         - message
@@ -374,7 +395,7 @@ components:
         rating:
           type: float
           description: Restaurant Rating
-          example: 3
+          example: 0
         owner_email:
           type: string
           description: Restaurant owner's email
@@ -485,7 +506,7 @@ components:
           minimum: 0
           maximum: 6
           description: Day of week
-          example: "3"
+          example: 3
         open_lunch:
           type: string
           format: date-time
@@ -603,4 +624,64 @@ components:
           type: integer
           description: restaurant id
           example: 2
-        
+    RestaurantId:
+      required:
+      - restaurant
+      - restaurant_tables
+      - menu
+      - opening
+      type: object
+      properties:
+        restaurant:
+          $ref: '#/components/schemas/Restaurant'
+        restaurant_tables:
+          type: integer
+          description: number of table for 6 people
+          example: 10
+        menu:
+          type: array
+          items:
+            type: string
+            maxLength: 100
+            minLength: 1
+            description: Cuisine type
+            example: 'Italian food'
+        opening:
+          type: array
+          items:
+            $ref: '#/components/schemas/OpeningsInsert'
+    OpeningsInsert:
+      required:
+      - week_day
+      - open_lunch
+      - close_lunch
+      - open_dinner
+      - close_dinner
+      type: object
+      properties:
+        week_day:
+          type: integer
+          minimum: 0
+          maximum: 6
+          description: Day of week
+          example: 3
+        open_lunch:
+          type: string
+          format: date-time
+          description: Time when the restaurant opens for lunch
+          example: "11:30"
+        close_lunch:
+          type: string
+          format: date-time
+          description: Time when the restaurant closes for lunch
+          example: "15:30"
+        open_dinner:
+          type: string
+          format: date-time
+          description: Time when the restaurant opens for dinner
+          example: "19:00"
+        close_dinner:
+          type: string
+          format: date-time
+          description: Time when the restaurant closes for dinner
+          example: "22:00"
