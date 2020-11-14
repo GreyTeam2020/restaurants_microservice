@@ -144,14 +144,14 @@ def get_reviews(restaurant_id):
 def delete_dish(dish_id):
     if dish_id is None:
         return error_message("400", "dish_id not specified"), 400
-    RestaurantService.delete_dish(dish_id)
+    RestaurantService.delete_dish(db_session, dish_id)
     return _get_response("OK", 200)
 
 
 def delete_table(table_id):
     if table_id is None:
         return error_message("400", "table_id not specified"), 400
-    RestaurantService.delete_dish(table_id)
+    RestaurantService.delete_table(db_session, table_id)
     return _get_response("OK", 200)
 
 

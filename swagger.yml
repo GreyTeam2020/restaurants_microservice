@@ -249,6 +249,61 @@ paths:
             application/json:
               schema:
                   $ref: '#/components/schemas/NotFound'
+
+  /restaurant/menu/{dish_id}:
+    delete:
+      tags:
+        - Dishes
+      summary: Delete a dish
+      operationId: app.delete_dish
+      parameters:
+        - in: path
+          name: dish_id
+          schema:
+            type: integer
+          required: true
+          description: The dish_id ID
+      responses:
+        200:
+          description: "The operation is done"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+        400:
+          description: "The code returned if there is some error on server, e.g: param not specified"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+
+  /restaurant/table/{table_id}:
+    delete:
+      tags:
+        - Tables
+      summary: Delete a table
+      operationId: app.delete_table
+      parameters:
+        - in: path
+          name: table_id
+          schema:
+            type: integer
+          required: true
+          description: The table_id ID
+      responses:
+        200:
+          description: "The operation is done"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+        400:
+          description: "The code returned if there is some error on server, e.g: param not specified"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+
 components:
   schemas:
     NotFound:
@@ -261,6 +316,15 @@ components:
           type: string
         message:
           type: string
+    Result:
+      required:
+        - result
+      type: object
+      properties:
+        result:
+          type: string
+          default: Type of result
+          example: "Message to describe what happen on server"
     Restaurant:
       required:
       - name

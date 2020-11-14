@@ -110,3 +110,16 @@ class RestaurantService:
             db_session.query(Review).filter(restaurant_id == Review.restaurant_id).all()
         )
         return tables
+
+
+    @staticmethod
+    def delete_dish(db_session, dish_id):
+        db_session.query(MenuDish).filter_by(id=dish_id).delete()
+        db_session.commit()
+        return True
+
+    @staticmethod
+    def delete_table(db_session, table_id):
+        db_session.query(RestaurantTable).filter_by(id=table_id).delete()
+        db_session.commit()
+        return True
