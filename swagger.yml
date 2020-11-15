@@ -529,6 +529,54 @@ paths:
             application/json:
               schema:
                   $ref: '#/components/schemas/Error'
+
+  /restaurants/{restaurant_id}/avg_rating:
+    get:
+      tags:
+      - Reviews
+      summary: Get avg rating of a restaurant
+      operationId: app.get_avg_rating_restaurant
+      parameters:
+      - name: restaurant_id
+        in: path
+        description: Restaurant's Unique identifier
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Return the avg reviews of the restaurant
+          content:
+            application/json:
+              schema:
+                type: number
+        500:
+          description: Generic error
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+
+  /restaurants/calculate_rating_for_all_restaurant:
+      get:
+        tags:
+        - Reviews
+        summary: Calculate rating for all restaurant (celery)
+        operationId: app.calculate_rating_for_all_restaurant
+        responses:
+          200:
+            description: "The operation is done"
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Result'
+          500:
+            description: Generic error
+            content:
+              application/json:
+                schema:
+                    $ref: '#/components/schemas/Error'
+
   /restaurants/create:
     post:
       tags:
@@ -550,6 +598,29 @@ paths:
             application/json:
               schema:
                   $ref: '#/components/schemas/Error'
+
+  /restaurants/update:
+    put:
+      tags:
+      - Restaurants
+      summary: Update a restaurant
+      operationId: app.update_restaurant_info
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Restaurant"
+      responses:
+        200:
+          description: "Restaurant is been updated"
+        500:
+          description: Generic error
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+
   /restaurant/menu/{dish_id}:
     delete:
       tags:
