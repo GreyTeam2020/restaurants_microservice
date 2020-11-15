@@ -69,10 +69,11 @@ class RestaurantService:
             return True
 
     @staticmethod
-    def get_restaurants_by_keyword_name(db_session, name):
+    def get_restaurants_by_keyword_name(name):
         """
         Method to return the restaurant inside the database using name as keyword
         """
+        db_session = current_app.config["DB_SESSION"]
         restaurant = (
             db_session.query(Restaurant)
             .filter(Restaurant.name.ilike("%{}%".format(name)))
@@ -251,7 +252,7 @@ class RestaurantService:
         # add tables in RestaurantTable table
         number_tables = data["restaurant_tables"]
         for i in range(number_tables):
-            RestaurantService.create_table(db_session, "", max_seats, new_restaurant.id)
+            RestaurantService.create_table("", max_seats, new_restaurant.id)
 
         # insert opening hours
         list_openings = data["opening"]
