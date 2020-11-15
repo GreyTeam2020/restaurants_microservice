@@ -182,7 +182,9 @@ def create_table(restaurant_id):
         return error_message("404", "Restaurant not found"), 404
 
     body = request.get_json()
-    RestaurantService.create_table(db_session, body["name"], body["max_seats"], restaurant_id)
+    RestaurantService.create_table(
+        db_session, body["name"], body["max_seats"], restaurant_id
+    )
     return _get_response("Table added to restaurant", 200, False)
 
 

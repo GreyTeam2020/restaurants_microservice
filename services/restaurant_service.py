@@ -209,7 +209,6 @@ class RestaurantService:
             db_session.add(new_menu)
             db_session.commit()
 
-
     @staticmethod
     def create_table(db_session, name, max_seats, restaurant_id):
         new_table = RestaurantTable()
