@@ -9,6 +9,7 @@ db_session = None
 
 _max_seats = 6
 
+
 def _get_response(message: str, code: int, is_custom_obj: bool = False):
     """
     This method contains the code to make a new response for flask view
@@ -156,8 +157,8 @@ def create_restaurant():
 
     # if the restaurant already exists: error
     if (
-            RestaurantService.get_restaurant_with_info(db_session, name, phone, lat, lon)
-            is True
+        RestaurantService.get_restaurant_with_info(db_session, name, phone, lat, lon)
+        is True
     ):
         return error_message("409", "Restaurant already exists"), 409
 
@@ -179,22 +180,62 @@ def create_table(restaurant_id):
     return _get_response("Table added to restaurant", 200, False)
 
 
-def create_dish():
-    pass
+def create_dish(restaurant_id):
+    restaurant = RestaurantService.get_restaurant(db_session, restaurant_id)
+    if restaurant is None:
+        return error_message("404", "Restaurant not found"), 404
+
+    body = request.get_json()
+    RestaurantService.create_dish(
+        db_session, body["name"], body["price"], restaurant_id
+    )
+    return _get_response("Dish added", 200, False)
 
 
-def create_photo():
-    pass
+def create_photo(restaurant_id):
+    restaurant = RestaurantService.get_restaurant(db_session, restaurant_id)
+    if restaurant is None:
+        return error_message("404", "Restaurant not found"), 404
+
+    body = request.get_json()
+    RestaurantService.create_restaurant_photo(
+        db_session, body["url"], body["caption"], restaurant_id
+    )
+    return _get_response("Photo added", 200, False)
 
 
-def create_review():
-    pass
+def create_review(restaurant_id):
+    restaurant = RestaurantService.get_restaurant(db_session, restaurant_id)
+    if restaurant is None:
+        return error_message("404", "Restaurant not found"), 404
+
+    body = request.get_json()
+
+    RestaurantService.create_review(
+        db_session, body["review"], body["stars"], body["reviewer_email"], restaurant_id
+    )
+
+    return _get_response("Review added", 200, False)
+
+
+def create_menu_photo(menu_id):
+    menu = RestaurantService.get_menu(db_session, menu_id)
+    if menu is None:
+        return error_message("404", "Menu not found"), 404
+
+    body = request.get_json()
+
+    RestaurantService.create_review(
+        db_session, body["review"], body["stars"], body["reviewer_email"], restaurant_id
+    )
+
+    return _get_response("Photo of the menu added", 200, False)
 
 
 def get_rating_restaurant(restaurant_id):
-    '''
+    """
     get avg of rating for a restaurant
-    '''
+    """
     if restaurant_id is None:
         return error_message("400", "dish_id not specified"), 400
     rating = RestaurantService.get_rating_restaurant(restaurant_id)
@@ -202,17 +243,17 @@ def get_rating_restaurant(restaurant_id):
 
 
 def calculate_rating_for_all_restaurant():
-    '''
+    """
     calculate rating for all restaurant(celery)
-    '''
+    """
     done = RestaurantService.calculate_rating_for_all_restaurant()
     return serialize(done)
 
 
 def update_restaurant_info():
-    '''
+    """
     update the restaurant infos
-    '''
+    """
     RestaurantService.update_restaurant_info()
 
 
@@ -251,7 +292,8 @@ def _init_flask_app(flask_app, conf_type: str = "config.DebugConfiguration"):
     :param flask_app:
     """
     flask_app.config.from_object(conf_type)
-    flask_app.config['DB_SESSION'] = db_session
+    flask_app.config["DB_SESSION"] = db_session
+
 
 @application.teardown_appcontext
 def shutdown_session(exception=None):
