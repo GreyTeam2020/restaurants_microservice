@@ -162,7 +162,7 @@ class Review(db):
 
 
 def init_db(uri):
-    engine = create_engine(uri, convert_unicode=True)
+    engine = create_engine(uri)
     db_session = scoped_session(
         sessionmaker(autocommit=False, autoflush=False, bind=engine)
     )

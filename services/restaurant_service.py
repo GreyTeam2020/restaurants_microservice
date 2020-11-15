@@ -1,4 +1,3 @@
-from flask import current_app
 from database import (
     Restaurant,
     Menu,
