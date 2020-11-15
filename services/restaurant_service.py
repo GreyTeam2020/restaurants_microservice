@@ -25,29 +25,32 @@ class RestaurantService:
     """
 
     @staticmethod
-    def get_all_restaurants(db_session):
+    def get_all_restaurants():
         """
         Method to return a list of all restaurants inside the database
         """
+        db_session = current_app.config["DB_SESSION"]
         all_restaurants = db_session.query(Restaurant).all()
         return all_restaurants
 
     @staticmethod
-    def get_restaurant(db_session, restaurant_id):
+    def get_restaurant(restaurant_id):
         """
         Method to return the restaurant inside the database with the specified id
         """
+        db_session = current_app.config["DB_SESSION"]
         restaurant = (
             db_session.query(Restaurant).filter(Restaurant.id == restaurant_id).first()
         )
         return restaurant
 
     @staticmethod
-    def get_restaurant_with_info(db_session, r_name, r_phone, r_lat, r_lon):
+    def get_restaurant_with_info(r_name, r_phone, r_lat, r_lon):
         """
         Method to return if a restaurant with name, phone, latitude and longitude
         specified already exists
         """
+        db_session = current_app.config["DB_SESSION"]
         restaurant = (
             db_session.query(Restaurant)
             .filter(
@@ -78,26 +81,29 @@ class RestaurantService:
         return restaurant
 
     @staticmethod
-    def get_menus(db_session, restaurant_id):
+    def get_menus(restaurant_id):
         """
         Method to return menus of the specified restaurant
         """
+        db_session = current_app.config["DB_SESSION"]
         menus = db_session.query(Menu).filter(restaurant_id == Menu.restaurant_id).all()
         return menus
 
     @staticmethod
-    def get_menu(db_session, menu_id):
+    def get_menu(menu_id):
         """
         Method to return the restaurant inside the database with the specified id
         """
+        db_session = current_app.config["DB_SESSION"]
         menu = db_session.query(Menu).filter(Menu.id == menu_id).first()
         return menu
 
     @staticmethod
-    def get_menu_photos(db_session, menu_id):
+    def get_menu_photos(menu_id):
         """
         Method to return photos of the specified restaurant
         """
+        db_session = current_app.config["DB_SESSION"]
         photos = (
             db_session.query(MenuPhotoGallery)
             .filter(menu_id == MenuPhotoGallery.menu_id)
@@ -106,10 +112,11 @@ class RestaurantService:
         return photos
 
     @staticmethod
-    def get_menu_photo_with_url(db_session, url):
+    def get_menu_photo_with_url(url):
         """
         Method to return photos with a specified URL
         """
+        db_session = current_app.config["DB_SESSION"]
         photo = (
             db_session.query(MenuPhotoGallery)
             .filter(url == MenuPhotoGallery.url)
@@ -118,10 +125,11 @@ class RestaurantService:
         return photo
 
     @staticmethod
-    def get_dishes(db_session, restaurant_id):
+    def get_dishes(restaurant_id):
         """
         Method to return dishes of the specified restaurant
         """
+        db_session = current_app.config["DB_SESSION"]
         dishes = (
             db_session.query(MenuDish)
             .filter(restaurant_id == MenuDish.restaurant_id)
@@ -130,10 +138,11 @@ class RestaurantService:
         return dishes
 
     @staticmethod
-    def get_openings(db_session, restaurant_id):
+    def get_openings(restaurant_id):
         """
         Method to return opening hours of the specified restaurant
         """
+        db_session = current_app.config["DB_SESSION"]
         openings = (
             db_session.query(OpeningHours)
             .filter(restaurant_id == OpeningHours.restaurant_id)
@@ -142,10 +151,11 @@ class RestaurantService:
         return openings
 
     @staticmethod
-    def get_tables(db_session, restaurant_id):
+    def get_tables(restaurant_id):
         """
         Method to return tables of the specified restaurant
         """
+        db_session = current_app.config["DB_SESSION"]
         tables = (
             db_session.query(RestaurantTable)
             .filter(restaurant_id == RestaurantTable.restaurant_id)
@@ -154,10 +164,11 @@ class RestaurantService:
         return tables
 
     @staticmethod
-    def get_photos(db_session, restaurant_id):
+    def get_photos(restaurant_id):
         """
         Method to return photos of the specified restaurant
         """
+        db_session = current_app.config["DB_SESSION"]
         photos = (
             db_session.query(PhotoGallery)
             .filter(restaurant_id == PhotoGallery.restaurant_id)
@@ -166,28 +177,31 @@ class RestaurantService:
         return photos
 
     @staticmethod
-    def get_photo_with_url(db_session, url):
+    def get_photo_with_url(url):
         """
         Method to return photos of the specified restaurant using url
         """
+        db_session = current_app.config["DB_SESSION"]
         photo = db_session.query(PhotoGallery).filter(url == PhotoGallery.url).all()
         return photo
 
     @staticmethod
-    def get_reviews(db_session, restaurant_id):
+    def get_reviews(restaurant_id):
         """
         Method to return photos of the specified restaurant
         """
+        db_session = current_app.config["DB_SESSION"]
         review = (
             db_session.query(Review).filter(restaurant_id == Review.restaurant_id).all()
         )
         return review
 
     @staticmethod
-    def get_reviews_random(db_session, restaurant_id, number):
+    def get_reviews_random(restaurant_id, number):
         """
         Method to return random reviews of the specified restaurant 
         """
+        db_session = current_app.config["DB_SESSION"]
         reviews = (
             db_session.query(Review)
             .filter(restaurant_id == Review.restaurant_id)
@@ -206,13 +220,15 @@ class RestaurantService:
         return True
 
     @staticmethod
-    def delete_table(db_session, table_id):
+    def delete_table(table_id):
+
+        db_session = current_app.config["DB_SESSION"]
         db_session.query(RestaurantTable).filter_by(id=table_id).delete()
         db_session.commit()
         return True
 
     @staticmethod
-    def create_restaurant(db_session, data, max_seats):
+    def create_restaurant(data, max_seats):
         """
         Method to create a restaurant
         """
@@ -228,6 +244,7 @@ class RestaurantService:
         new_restaurant.rating = data["restaurant"]["rating"]
         new_restaurant.owner_email = data["restaurant"]["owner_email"]
 
+        db_session = current_app.config["DB_SESSION"]
         db_session.add(new_restaurant)
         db_session.commit()
 
@@ -272,13 +289,14 @@ class RestaurantService:
             db_session.commit()
 
     @staticmethod
-    def create_table(db_session, name, max_seats, restaurant_id):
+    def create_table(name, max_seats, restaurant_id):
         new_table = RestaurantTable()
         new_table.restaurant_id = restaurant_id
         new_table.name = name
         new_table.max_seats = max_seats
         new_table.available = True
 
+        db_session = current_app.config["DB_SESSION"]
         db_session.add(new_table)
         db_session.commit()
 
@@ -336,42 +354,46 @@ class RestaurantService:
         pass
 
     @staticmethod
-    def create_dish(db_session, name, price, restaurant_id):
+    def create_dish(name, price, restaurant_id):
         new_dish = MenuDish()
         new_dish.restaurant_id = restaurant_id
         new_dish.name = name
         new_dish.price = price
 
+        db_session = current_app.config["DB_SESSION"]
         db_session.add(new_dish)
         db_session.commit()
 
     @staticmethod
-    def create_restaurant_photo(db_session, url, caption, restaurant_id):
+    def create_restaurant_photo(url, caption, restaurant_id):
         new_photo = PhotoGallery()
         new_photo.restaurant_id = restaurant_id
         new_photo.url = url
         new_photo.caption = caption
 
+        db_session = current_app.config["DB_SESSION"]
         db_session.add(new_photo)
         db_session.commit()
 
     @staticmethod
-    def create_review(db_session, review, stars, reviewer_email, restaurant_id):
+    def create_review(review, stars, reviewer_email, restaurant_id):
         new_review = Review()
         new_review.restaurant_id = restaurant_id
         new_review.review = review
         new_review.stars = stars
         new_review.reviewer_email = reviewer_email
 
+        db_session = current_app.config["DB_SESSION"]
         db_session.add(new_review)
         db_session.commit()
 
     @staticmethod
-    def create_menu_photo(db_session, url, caption, menu_id):
+    def create_menu_photo(url, caption, menu_id):
         new_photo = MenuPhotoGallery()
         new_photo.menu_id = menu_id
         new_photo.url = url
         new_photo.caption = caption
 
+        db_session = current_app.config["DB_SESSION"]
         db_session.add(new_photo)
         db_session.commit()
