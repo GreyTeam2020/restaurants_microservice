@@ -1,3 +1,4 @@
+from flask import current_app
 from database import (
     Restaurant,
     Menu,
@@ -9,6 +10,7 @@ from database import (
     MenuPhotoGallery,
 )
 import datetime
+from sqlalchemy.sql.expression import func
 
 
 class RestaurantService:
@@ -71,9 +73,7 @@ class RestaurantService:
         """
         Method to return the restaurant inside the database with the specified id
         """
-        menu = (
-            db_session.query(Menu).filter(Menu.id == menu_id).first()
-        )
+        menu = db_session.query(Menu).filter(Menu.id == menu_id).first()
         return menu
 
     @staticmethod
@@ -81,12 +81,24 @@ class RestaurantService:
         """
         Method to return photos of the specified restaurant 
         """
-        tables = (
+        photos = (
             db_session.query(MenuPhotoGallery)
             .filter(menu_id == MenuPhotoGallery.menu_id)
             .all()
         )
-        return tables
+        return photos
+
+    @staticmethod
+    def get_menu_photo_with_url(db_session, url):
+        """
+        Method to return photos with a specified URL
+        """
+        photo = (
+            db_session.query(MenuPhotoGallery)
+            .filter(url == MenuPhotoGallery.url)
+            .first()
+        )
+        return photo
 
     @staticmethod
     def get_dishes(db_session, restaurant_id):
@@ -129,22 +141,45 @@ class RestaurantService:
         """
         Method to return photos of the specified restaurant 
         """
-        tables = (
+        photos = (
             db_session.query(PhotoGallery)
             .filter(restaurant_id == PhotoGallery.restaurant_id)
             .all()
         )
-        return tables
+        return photos
+
+    @staticmethod
+    def get_photo_with_url(db_session, url):
+        """
+        Method to return photos of the specified restaurant using url
+        """
+        photo = db_session.query(PhotoGallery).filter(url == PhotoGallery.url).all()
+        return photo
 
     @staticmethod
     def get_reviews(db_session, restaurant_id):
         """
         Method to return photos of the specified restaurant 
         """
-        tables = (
+        review = (
             db_session.query(Review).filter(restaurant_id == Review.restaurant_id).all()
         )
-        return tables
+        return review
+
+    @staticmethod
+    def get_reviews_random(db_session, restaurant_id, number):
+        """
+        Method to return random reviews of the specified restaurant 
+        """
+        reviews = (
+            db_session.query(Review)
+            .filter(restaurant_id == Review.restaurant_id)
+            .order_by(func.random())
+            .limit(number)
+            .all()
+        )
+
+        return reviews
 
     @staticmethod
     def delete_dish(db_session, dish_id):
@@ -258,4 +293,14 @@ class RestaurantService:
         new_review.reviewer_email = reviewer_email
 
         db_session.add(new_review)
+        db_session.commit()
+
+    @staticmethod
+    def create_menu_photo(db_session, url, caption, menu_id):
+        new_photo = MenuPhotoGallery()
+        new_photo.menu_id = menu_id
+        new_photo.url = url
+        new_photo.caption = caption
+
+        db_session.add(new_photo)
         db_session.commit()
