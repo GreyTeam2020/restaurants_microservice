@@ -1,4 +1,6 @@
-import connexion, logging, database
+import os
+import connexion, logging
+from database import init_db
 from flask import jsonify, request
 from services.restaurant_service import RestaurantService
 import json
@@ -6,7 +8,6 @@ import json
 db_session = None
 
 _max_seats = 6
-
 
 def _get_response(message: str, code: int, is_custom_obj: bool = False):
     """
@@ -45,7 +46,6 @@ def error_message(code, message):
 
 
 def get_restaurants():
-
     restaurants = RestaurantService.get_all_restaurants(db_session)
     if restaurants is None:
         return error_message("404", "Restaurants not found"), 404
@@ -54,7 +54,6 @@ def get_restaurants():
 
 
 def get_restaurant(restaurant_id):
-
     restaurant = RestaurantService.get_restaurant(db_session, restaurant_id)
     if restaurant is None:
         return error_message("404", "Restaurant not found"), 404
@@ -63,7 +62,6 @@ def get_restaurant(restaurant_id):
 
 
 def get_menus(restaurant_id):
-
     restaurant = RestaurantService.get_restaurant(db_session, restaurant_id)
     if restaurant is None:
         return error_message("404", "Restaurant not found"), 404
@@ -88,7 +86,6 @@ def get_menus(restaurant_id):
 
 
 def get_dishes(restaurant_id):
-
     restaurant = RestaurantService.get_restaurant(db_session, restaurant_id)
     if restaurant is None:
         return error_message("404", "Restaurant not found"), 404
@@ -101,7 +98,6 @@ def get_dishes(restaurant_id):
 
 
 def get_openings(restaurant_id):
-
     restaurant = RestaurantService.get_restaurant(db_session, restaurant_id)
     if restaurant is None:
         return error_message("404", "Restaurant not found"), 404
@@ -114,7 +110,6 @@ def get_openings(restaurant_id):
 
 
 def get_tables(restaurant_id):
-
     restaurant = RestaurantService.get_restaurant(db_session, restaurant_id)
     if restaurant is None:
         return error_message("404", "Restaurant not found"), 404
@@ -127,7 +122,6 @@ def get_tables(restaurant_id):
 
 
 def get_photos(restaurant_id):
-
     restaurant = RestaurantService.get_restaurant(db_session, restaurant_id)
     if restaurant is None:
         return error_message("404", "Restaurant not found"), 404
@@ -140,7 +134,6 @@ def get_photos(restaurant_id):
 
 
 def get_reviews(restaurant_id):
-
     restaurant = RestaurantService.get_restaurant(db_session, restaurant_id)
     if restaurant is None:
         return error_message("404", "Restaurant not found"), 404
@@ -153,7 +146,6 @@ def get_reviews(restaurant_id):
 
 
 def create_restaurant():
-
     body = request.get_json()
 
     # check if the restaurant already exists (phone number, lat, lon, name)
@@ -168,6 +160,7 @@ def create_restaurant():
         is True
     ):
         return error_message("409", "Restaurant already exists"), 409
+
 
     # add restaurant
     RestaurantService.create_restaurant(db_session, body, _max_seats)
@@ -254,11 +247,25 @@ def delete_table(table_id):
     return _get_response("OK", 200)
 
 
+# --------- END API definition --------------------------
 logging.basicConfig(level=logging.INFO)
-db_session = database.init_db("sqlite:///restaurant.db")
 app = connexion.App(__name__)
-app.add_api("swagger.yml")
 application = app.app
+if "GOUOUTSAFE_TEST" in os.environ and os.environ["GOUOUTSAFE_TEST"] == "1":
+    db_session = init_db("sqlite:///tests/restaurant.db")
+else:
+    db_session = init_db("sqlite:///restaurant.db")
+app.add_api("swagger.yml")
+# set the WSGI application callable to allow using uWSGI:
+# uwsgi --http :8080 -w app
+
+
+def _init_flask_app(flask_app, conf_type: str = "config.DebugConfiguration"):
+    """
+    This method init the flask app
+    :param flask_app:
+    """
+    flask_app.config.from_object(conf_type)
 
 
 @application.teardown_appcontext
@@ -267,4 +274,5 @@ def shutdown_session(exception=None):
 
 
 if __name__ == "__main__":
+    _init_flask_app(application)
     app.run(port=5003)
