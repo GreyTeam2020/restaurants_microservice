@@ -57,6 +57,33 @@ paths:
             application/json:
               schema:
                   $ref: '#/components/schemas/Error'
+  /restaurants/{restaurant_id}/name:
+    get:
+      tags:
+      - Restaurants
+      summary: Get the name of the restaurant
+      operationId: app.get_restaurant_name
+      parameters:
+      - name: restaurant_id
+        in: path
+        description: Restaurant's Unique identifier
+        required: true
+        schema:
+          pattern: ^[a-zA-Z0-9-]+$
+          type: string
+      responses:
+        200:
+          description: Return restaurant
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+        404:
+          description: Restaurant not found
+          content: 
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
   /restaurants/{restaurant_id}/menu:
     get:
       tags:
