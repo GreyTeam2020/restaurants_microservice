@@ -238,10 +238,7 @@ def create_restaurant():
     lon = body["restaurant"]["lon"]
 
     # if the restaurant already exists: error
-    if (
-        RestaurantService.get_restaurant_with_info(name, phone, lat, lon)
-        is True
-    ):
+    if RestaurantService.get_restaurant_with_info(name, phone, lat, lon) is True:
         return error_message("409", "Restaurant already exists"), 409
 
     # add restaurant
@@ -256,9 +253,7 @@ def create_table(restaurant_id):
         return error_message("404", "Restaurant not found"), 404
 
     body = request.get_json()
-    RestaurantService.create_table(
-        body["name"], body["max_seats"], restaurant_id
-    )
+    RestaurantService.create_table(body["name"], body["max_seats"], restaurant_id)
     return _get_response("Table added to restaurant", 200)
 
 
@@ -268,9 +263,7 @@ def create_dish(restaurant_id):
         return error_message("404", "Restaurant not found"), 404
 
     body = request.get_json()
-    RestaurantService.create_dish(
-        body["name"], body["price"], restaurant_id
-    )
+    RestaurantService.create_dish(body["name"], body["price"], restaurant_id)
     return _get_response("Dish added", 200)
 
 
@@ -316,9 +309,7 @@ def create_menu_photo(menu_id):
     if photo is not None:
         return error_message("409", "URL already present"), 409
 
-    RestaurantService.create_menu_photo(
-        body["url"], body["caption"], menu_id
-    )
+    RestaurantService.create_menu_photo(body["url"], body["caption"], menu_id)
 
     return _get_response("Photo of the menu added", 200)
 

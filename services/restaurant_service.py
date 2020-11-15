@@ -10,8 +10,6 @@ from database import (
     MenuPhotoGallery,
 )
 
-from flask import current_app
-
 import datetime
 from sqlalchemy.sql.expression import func
 
