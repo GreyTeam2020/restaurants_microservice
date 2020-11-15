@@ -1,4 +1,4 @@
-![Travis (.com)](https://img.shields.io/travis/com/GreyTeam2020/restaurants_microservice?style=for-the-badge)
+![Travis (.com)](https://travis-ci.com/GreyTeam2020/restaurants_microservice.svg?token=Z9fti5HUob4obw2a3b6K&branch=main)
 
 ## Table of content
 
