@@ -214,7 +214,7 @@ def init_db(uri):
             first_menu_photo.caption = "Photo 1"
             db_session.add(first_menu_photo)
             db_session.commit()
-        
+
         q = db_session.query(MenuPhotoGallery).filter(MenuPhotoGallery.id == 2)
         menu_photo = q.first()
         if menu_photo is None:
@@ -224,7 +224,6 @@ def init_db(uri):
             first_menu_photo.caption = "Photo 2"
             db_session.add(first_menu_photo)
             db_session.commit()
-    
 
     q = db_session.query(Menu).filter(Menu.id == 2)
     menu = q.first()

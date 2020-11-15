@@ -5,6 +5,9 @@ import json
 
 db_session = None
 
+_max_seats = 6
+
+
 def _get_response(message: str, code: int, is_custom_obj: bool = False):
     """
     This method contains the code to make a new response for flask view
@@ -16,16 +19,24 @@ def _get_response(message: str, code: int, is_custom_obj: bool = False):
         return {"result": message}, code
     return message, code
 
+
 def serialize(obj):
     return dict([(k, v) for k, v in obj.__dict__.items() if k[0] != "_"])
+
+
+# time objects are not serializeble in JSON so they are changed in strings
+def times_to_strings(obj_dict):
+    for key, value in obj_dict.items():
+        if str(type(value)) == "<class 'datetime.time'>":
+            obj_dict.update({key: value.strftime("%H:%M")})
+    return obj_dict
 
 
 def list_obj_json(name_list, list_objs):
     objects = []
     for obj in list_objs:
-        objects.append(serialize(obj))
+        objects.append(times_to_strings(serialize(obj)))
     list_json = json.dumps({name_list: objects})
-
     return json.loads(list_json)
 
 
@@ -63,16 +74,16 @@ def get_menus(restaurant_id):
     else:
 
         all_menus = []
-        #get menu photos for each menu
+        # get menu photos for each menu
         for menu in menus:
             photos = RestaurantService.get_menu_photos(db_session, menu.id)
             json_menu = serialize(menu)
-            photos_list=[]
+            photos_list = []
             for photo in photos:
                 photos_list.append(serialize(photo))
             json_menu["photos"] = photos_list
             all_menus.append(json_menu)
-        
+
         return json.loads(json.dumps({"menus": all_menus}))
 
 
@@ -144,20 +155,35 @@ def get_reviews(restaurant_id):
 def create_restaurant():
 
     body = request.get_json()
-   
-    
-    #check if the restaurant already exists (phone number, lat, lon, name)
+
+    # check if the restaurant already exists (phone number, lat, lon, name)
+    name = body["restaurant"]["name"]
     phone = body["restaurant"]["phone"]
-    
-    #if not exists insert it!
+    lat = body["restaurant"]["lat"]
+    lon = body["restaurant"]["lon"]
 
-    #return response
+    # if the restaurant already exists: error
+    if (
+        RestaurantService.get_restaurant_with_info(db_session, name, phone, lat, lon)
+        is True
+    ):
+        return error_message("409", "Restaurant already exists"), 409
 
-    pass
+    # add restaurant
+    RestaurantService.create_restaurant(db_session, body, _max_seats)
+    # return response
+    return _get_response("Restaurant is been created", 200, False)
 
 
-def create_table():
-    pass
+def create_table(restaurant_id):
+
+    restaurant = RestaurantService.get_restaurant(db_session, restaurant_id)
+    if restaurant is None:
+        return error_message("404", "Restaurant not found"), 404
+
+    body = request.get_json()
+    RestaurantService.create_table(db_session, body["name"], body["max_seats"], restaurant_id)
+    return _get_response("Table added to restaurant", 200, False)
 
 
 def create_dish():
@@ -184,8 +210,6 @@ def delete_table(table_id):
         return error_message("400", "table_id not specified"), 400
     RestaurantService.delete_table(db_session, table_id)
     return _get_response("OK", 200)
-
-
 
 
 logging.basicConfig(level=logging.INFO)
