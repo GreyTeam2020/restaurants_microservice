@@ -156,11 +156,10 @@ def create_restaurant():
 
     # if the restaurant already exists: error
     if (
-        RestaurantService.get_restaurant_with_info(db_session, name, phone, lat, lon)
-        is True
+            RestaurantService.get_restaurant_with_info(db_session, name, phone, lat, lon)
+            is True
     ):
         return error_message("409", "Restaurant already exists"), 409
-
 
     # add restaurant
     RestaurantService.create_restaurant(db_session, body, _max_seats)
@@ -169,7 +168,6 @@ def create_restaurant():
 
 
 def create_table(restaurant_id):
-
     restaurant = RestaurantService.get_restaurant(db_session, restaurant_id)
     if restaurant is None:
         return error_message("404", "Restaurant not found"), 404
@@ -193,10 +191,35 @@ def create_review():
     pass
 
 
+def get_rating_restaurant(restaurant_id):
+    '''
+    get avg of rating for a restaurant
+    '''
+    if restaurant_id is None:
+        return error_message("400", "dish_id not specified"), 400
+    rating = RestaurantService.get_rating_restaurant(restaurant_id)
+    return serialize(rating)
+
+
+def calculate_rating_for_all_restaurant():
+    '''
+    calculate rating for all restaurant(celery)
+    '''
+    done = RestaurantService.calculate_rating_for_all_restaurant()
+    return serialize(done)
+
+
+def update_restaurant_info():
+    '''
+    update the restaurant infos
+    '''
+    RestaurantService.update_restaurant_info()
+
+
 def delete_dish(dish_id):
     if dish_id is None:
         return error_message("400", "dish_id not specified"), 400
-    RestaurantService.delete_dish(db_session, dish_id)
+    RestaurantService.delete_dish(dish_id)
     return _get_response("OK", 200)
 
 
@@ -216,6 +239,8 @@ if "GOUOUTSAFE_TEST" in os.environ and os.environ["GOUOUTSAFE_TEST"] == "1":
 else:
     db_session = init_db("sqlite:///restaurant.db")
 app.add_api("swagger.yml")
+
+
 # set the WSGI application callable to allow using uWSGI:
 # uwsgi --http :8080 -w app
 
@@ -226,7 +251,7 @@ def _init_flask_app(flask_app, conf_type: str = "config.DebugConfiguration"):
     :param flask_app:
     """
     flask_app.config.from_object(conf_type)
-
+    flask_app.config['DB_SESSION'] = db_session
 
 @application.teardown_appcontext
 def shutdown_session(exception=None):

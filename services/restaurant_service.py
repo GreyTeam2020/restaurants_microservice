@@ -6,9 +6,16 @@ from database import (
     RestaurantTable,
     PhotoGallery,
     Review,
-    MenuPhotoGallery,
+    MenuPhotoGallery
 )
+
+from flask import (
+    current_app
+)
+
 import datetime
+
+from decimal import Decimal
 
 
 class RestaurantService:
@@ -43,13 +50,13 @@ class RestaurantService:
         """
         restaurant = (
             db_session.query(Restaurant)
-            .filter(
+                .filter(
                 Restaurant.name == r_name,
                 Restaurant.phone == r_phone,
                 Restaurant.lat == r_lat,
                 Restaurant.lon == r_lon,
             )
-            .first()
+                .first()
         )
         if restaurant is None:
             # the restaurant doesn't exist
@@ -73,8 +80,8 @@ class RestaurantService:
         """
         tables = (
             db_session.query(MenuPhotoGallery)
-            .filter(menu_id == MenuPhotoGallery.menu_id)
-            .all()
+                .filter(menu_id == MenuPhotoGallery.menu_id)
+                .all()
         )
         return tables
 
@@ -85,8 +92,8 @@ class RestaurantService:
         """
         dishes = (
             db_session.query(MenuDish)
-            .filter(restaurant_id == MenuDish.restaurant_id)
-            .all()
+                .filter(restaurant_id == MenuDish.restaurant_id)
+                .all()
         )
         return dishes
 
@@ -97,8 +104,8 @@ class RestaurantService:
         """
         openings = (
             db_session.query(OpeningHours)
-            .filter(restaurant_id == OpeningHours.restaurant_id)
-            .all()
+                .filter(restaurant_id == OpeningHours.restaurant_id)
+                .all()
         )
         return openings
 
@@ -109,8 +116,8 @@ class RestaurantService:
         """
         tables = (
             db_session.query(RestaurantTable)
-            .filter(restaurant_id == RestaurantTable.restaurant_id)
-            .all()
+                .filter(restaurant_id == RestaurantTable.restaurant_id)
+                .all()
         )
         return tables
 
@@ -121,8 +128,8 @@ class RestaurantService:
         """
         tables = (
             db_session.query(PhotoGallery)
-            .filter(restaurant_id == PhotoGallery.restaurant_id)
-            .all()
+                .filter(restaurant_id == PhotoGallery.restaurant_id)
+                .all()
         )
         return tables
 
@@ -137,7 +144,8 @@ class RestaurantService:
         return tables
 
     @staticmethod
-    def delete_dish(db_session, dish_id):
+    def delete_dish(dish_id):
+        db_session = current_app.config['DB_SESSION']
         db_session.query(MenuDish).filter_by(id=dish_id).delete()
         db_session.commit()
         return True
@@ -218,3 +226,56 @@ class RestaurantService:
 
         db_session.add(new_table)
         db_session.commit()
+
+    @staticmethod
+    def get_rating_restaurant(restaurant_id: int) -> float:
+        """
+        get avg of rating for a restaurant
+        This method perform the request to calculate the rating of the restaurants
+        with the review.
+        :param restaurant_id: the restaurant id
+        :return: the rating value, as 0.0 or 5.0
+        """
+        db_session = current_app.config['DB_SESSION']
+        rating_value = 0.0
+        restaurant = db_session.query(Restaurant).filter_by(id=restaurant_id).first()
+        if restaurant is None:
+            raise Exception(
+                "Restaurant with id {} don't exist on database".format(restaurant_id)
+            )
+        reviews_list = (
+            db_session.query(Review).filter_by(restaurant_id=restaurant_id).all()
+        )
+        if (reviews_list is None) or (len(reviews_list) == 0):
+            return rating_value
+
+        for review in reviews_list:
+            rating_value = rating_value + float(review.stars)
+
+        rating_value = rating_value / float(len(reviews_list))
+        current_app.logger.debug(
+            "Rating calculate for restaurant with name {} is {}".format(
+                restaurant.name, rating_value
+            )
+        )
+        restaurant.rating = Decimal(rating_value)
+        db_session.commit()
+        return rating_value
+
+    @staticmethod
+    def calculate_rating_for_all_restaurant():
+        """
+        This method is used inside celery background task to calculate the rating for each restaurants
+        """
+        db_session = current_app.config['DB_SESSION']
+        restaurants_list = db_session.query(Restaurant).all()
+        for restaurant in restaurants_list:
+            RestaurantService.get_rating_restaurant(restaurant.id)
+        return True
+
+    @staticmethod
+    def update_restaurant_info():
+        '''
+        update the restaurant infos
+        '''
+        pass
