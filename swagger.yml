@@ -324,7 +324,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Result'
-
 components:
   schemas:
     Error:
@@ -370,11 +369,11 @@ components:
           description: Restaurant's name
           example: "My Pizza Restaurant"
         lat:
-          type: float
+          type: number
           description: Restaurant Latitude
           example: 42.42
         lon:
-          type: float
+          type: number
           description: Restaurant Longitude
           example: 42.42
         phone:
@@ -393,7 +392,7 @@ components:
           description: Restaurant avg time
           example: 42
         rating:
-          type: float
+          type: number
           description: Restaurant Rating
           example: 0
         owner_email:
@@ -476,7 +475,7 @@ components:
           description: Name of the dish
           example: "Pizza margherita"
         price:
-          type: float
+          type: number
           description: Price of the plate
           example: "10.50"
         id:

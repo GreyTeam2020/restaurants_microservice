@@ -143,23 +143,15 @@ def get_reviews(restaurant_id):
 
 def create_restaurant():
 
-    json = request.get_json()
-    email = json["email"]
-    phone = json["phone"]
-    user = UserService.user_is_present(db_session, email, phone)
-    if user is not None:
-        return _get_response(
-            "User with email {} and/or phone already exist".format(email, phone),
-            500,
-        )
-    user = UserService.create_user(db_session, json)
-    if user is not None:
-        return _get_response("OK", 200)
-    else:
-        return _get_response(
-            "User not created because we have an error on server", 500
-        )
+    body = request.get_json()
+   
+    
+    #check if the restaurant already exists (phone number, lat, lon, name)
+    phone = body["restaurant"]["phone"]
+    
+    #if not exists insert it!
 
+    #return response
 
     pass
 
@@ -178,6 +170,7 @@ def create_photo():
 
 def create_review():
     pass
+
 
 def delete_dish(dish_id):
     if dish_id is None:
