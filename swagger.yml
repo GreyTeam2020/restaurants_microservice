@@ -57,6 +57,33 @@ paths:
             application/json:
               schema:
                   $ref: '#/components/schemas/Error'
+  /restaurants/{restaurant_id}/name:
+    get:
+      tags:
+      - Restaurants
+      summary: Get the name of the restaurant
+      operationId: app.get_restaurant_name
+      parameters:
+      - name: restaurant_id
+        in: path
+        description: Restaurant's Unique identifier
+        required: true
+        schema:
+          pattern: ^[a-zA-Z0-9-]+$
+          type: string
+      responses:
+        200:
+          description: Return restaurant
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+        404:
+          description: Restaurant not found
+          content: 
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
   /restaurants/{restaurant_id}/menu:
     get:
       tags:
@@ -86,6 +113,41 @@ paths:
         404:
           description: Menu not found
           content: 
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+  /restaurants/menu/{menu_id}:
+    post:
+      tags:
+      - Menu
+      summary: Create a new photo for the menu
+      operationId: app.create_menu_photo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PhotoCreation"
+      parameters:
+      - name: menu_id
+        in: path
+        description: Restaurant's Unique identifier
+        required: true
+        schema:
+          pattern: ^[a-zA-Z0-9-]+$
+          type: string
+      responses:
+        200:
+          description: "Photo added"
+        404:
+          description: Error restaurant not found
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+        409:
+          description: Error URL already used
+          content:
             application/json:
               schema:
                   $ref: '#/components/schemas/Error'
@@ -301,6 +363,12 @@ paths:
             application/json:
               schema:
                   $ref: '#/components/schemas/Error'
+        409:
+          description: Error URL already used
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
   /restaurants/{restaurant_id}/reviews:
     get:
       tags:
@@ -358,6 +426,44 @@ paths:
         404:
           description: Error restaurant not found
           content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+  /restaurants/{restaurant_id}/reviews/{number}:
+    get:
+      tags:
+      - Reviews
+      summary: Get the a specified number of random reviews
+      operationId: app.get_random_reviews
+      parameters:
+      - name: restaurant_id
+        in: path
+        description: Restaurant's Unique identifier
+        required: true
+        schema:
+          pattern: ^[a-zA-Z0-9-]+$
+          type: string
+      - name: number
+        in: path
+        description: number of reviews to get
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: Return the random reviews of the restaurant
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Reviews:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Reviews'
+        404:
+          description: Reviews not found
+          content: 
             application/json:
               schema:
                   $ref: '#/components/schemas/Error'
