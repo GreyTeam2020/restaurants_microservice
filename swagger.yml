@@ -185,6 +185,34 @@ paths:
             application/json:
               schema:
                   $ref: '#/components/schemas/Error'
+    post:
+      tags:
+      - Tables
+      summary: Create a table in the restaurant
+      operationId: app.create_table
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TableCreation"
+      parameters:
+      - name: restaurant_id
+        in: path
+        description: Restaurant's Unique identifier
+        required: true
+        schema:
+          pattern: ^[a-zA-Z0-9-]+$
+          type: string
+      responses:
+        200:
+          description: "Table added to restaurant"
+        404:
+          description: Generic error
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
   /restaurants/{restaurant_id}/photos:
     get:
       tags:
@@ -263,14 +291,13 @@ paths:
               $ref: "#/components/schemas/RestaurantId"
       responses:
         200:
-          description: "Ok"
-        500:
+          description: "Restaurant is been created"
+        409:
           description: Generic error
           content:
             application/json:
               schema:
                   $ref: '#/components/schemas/Error'
-
   /restaurant/menu/{dish_id}:
     delete:
       tags:
@@ -297,7 +324,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Result'
-
   /restaurant/table/{table_id}:
     delete:
       tags:
@@ -684,3 +710,21 @@ components:
           format: date-time
           description: Time when the restaurant closes for dinner
           example: "22:00"
+    TableCreation:
+      required:
+      - max_seats
+      - name
+      type: object
+      properties:
+        max_seats:
+          type: integer
+          minimum: 0
+          description: Max number of people at the table
+          example: 3
+        name:
+          type: string
+          maxLength: 100
+          description: name of the table
+          example: 'Red table'
+
+          
