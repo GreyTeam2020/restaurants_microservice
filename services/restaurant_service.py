@@ -69,6 +69,18 @@ class RestaurantService:
             return True
 
     @staticmethod
+    def get_restaurants_by_keyword_name(db_session, name):
+        """
+        Method to return the restaurant inside the database using name as keyword
+        """
+        restaurant = (
+            db_session.query(Restaurant)
+            .filter(Restaurant.name.ilike("%{}%".format(name)))
+            .all()
+        )
+        return restaurant
+
+    @staticmethod
     def get_menus(restaurant_id):
         """
         Method to return menus of the specified restaurant
