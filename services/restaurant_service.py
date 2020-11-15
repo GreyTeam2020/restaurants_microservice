@@ -67,6 +67,16 @@ class RestaurantService:
         return menus
 
     @staticmethod
+    def get_menu(db_session, menu_id):
+        """
+        Method to return the restaurant inside the database with the specified id
+        """
+        menu = (
+            db_session.query(Menu).filter(Menu.id == menu_id).first()
+        )
+        return menu
+
+    @staticmethod
     def get_menu_photos(db_session, menu_id):
         """
         Method to return photos of the specified restaurant 
@@ -217,4 +227,35 @@ class RestaurantService:
         new_table.available = True
 
         db_session.add(new_table)
+        db_session.commit()
+
+    @staticmethod
+    def create_dish(db_session, name, price, restaurant_id):
+        new_dish = MenuDish()
+        new_dish.restaurant_id = restaurant_id
+        new_dish.name = name
+        new_dish.price = price
+
+        db_session.add(new_dish)
+        db_session.commit()
+
+    @staticmethod
+    def create_restaurant_photo(db_session, url, caption, restaurant_id):
+        new_photo = PhotoGallery()
+        new_photo.restaurant_id = restaurant_id
+        new_photo.url = url
+        new_photo.caption = caption
+
+        db_session.add(new_photo)
+        db_session.commit()
+
+    @staticmethod
+    def create_review(db_session, review, stars, reviewer_email, restaurant_id):
+        new_review = Review()
+        new_review.restaurant_id = restaurant_id
+        new_review.review = review
+        new_review.stars = stars
+        new_review.reviewer_email = reviewer_email
+
+        db_session.add(new_review)
         db_session.commit()

@@ -111,13 +111,41 @@ paths:
               schema:
                 type: object
                 properties:
-                  Menus:
+                  Dishes:
                     type: array
                     items:
                       $ref: '#/components/schemas/Dishes'
         404:
           description: Dishes not found
           content: 
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+    post:
+      tags:
+      - Dishes
+      summary: Create a new dish in the restaurant
+      operationId: app.create_dish
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DishCreation"
+      parameters:
+      - name: restaurant_id
+        in: path
+        description: Restaurant's Unique identifier
+        required: true
+        schema:
+          pattern: ^[a-zA-Z0-9-]+$
+          type: string
+      responses:
+        200:
+          description: "Dish added"
+        404:
+          description: Error restaurant not found
+          content:
             application/json:
               schema:
                   $ref: '#/components/schemas/Error'
@@ -143,7 +171,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  Menus:
+                  Openings:
                     type: array
                     items:
                       $ref: '#/components/schemas/Openings'
@@ -175,7 +203,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  Menus:
+                  Tables:
                     type: array
                     items:
                       $ref: '#/components/schemas/Tables'
@@ -235,13 +263,41 @@ paths:
               schema:
                 type: object
                 properties:
-                  Menus:
+                  Photos:
                     type: array
                     items:
                       $ref: '#/components/schemas/Photos'
         404:
           description: Photos not found
           content: 
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+    post:
+      tags:
+      - Photos
+      summary: Create a new photo for the restaurant
+      operationId: app.create_photo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PhotoCreation"
+      parameters:
+      - name: restaurant_id
+        in: path
+        description: Restaurant's Unique identifier
+        required: true
+        schema:
+          pattern: ^[a-zA-Z0-9-]+$
+          type: string
+      responses:
+        200:
+          description: "Photo added"
+        404:
+          description: Error restaurant not found
+          content:
             application/json:
               schema:
                   $ref: '#/components/schemas/Error'
@@ -267,13 +323,41 @@ paths:
               schema:
                 type: object
                 properties:
-                  Menus:
+                  Reviews:
                     type: array
                     items:
                       $ref: '#/components/schemas/Reviews'
         404:
           description: Reviews not found
           content: 
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+    post:
+      tags:
+      - Reviews
+      summary: Create a new review for the restaurant
+      operationId: app.create_review
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReviewCreation"
+      parameters:
+      - name: restaurant_id
+        in: path
+        description: Restaurant's Unique identifier
+        required: true
+        schema:
+          pattern: ^[a-zA-Z0-9-]+$
+          type: string
+      responses:
+        200:
+          description: "Review added"
+        404:
+          description: Error restaurant not found
+          content:
             application/json:
               schema:
                   $ref: '#/components/schemas/Error'
@@ -503,7 +587,7 @@ components:
         price:
           type: number
           description: Price of the plate
-          example: "10.50"
+          example: 10.50
         id:
           type: integer
           description: id of the dish
@@ -726,5 +810,59 @@ components:
           maxLength: 100
           description: name of the table
           example: 'Red table'
-
-          
+    DishCreation:
+      required:
+      - name
+      - price
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+          description: name of the dish
+          example: 'Pizza margherita'
+        price:
+          type: number
+          minimum: 0
+          description: price of the dish
+          example: 10.50
+    PhotoCreation:
+      required:
+      - caption
+      - url
+      type: object
+      properties:
+        caption:
+          type: string
+          maxLength: 200
+          minLength: 0
+          description: brief description of the photo
+          example: 'Photo 1'
+        url:
+          type: string
+          minLength: 0
+          maxLength: 255
+          description: url of the photo
+          example: "http://photo1.safe"
+    ReviewCreation: 
+      required:
+      - stars
+      - review
+      - reviewer_email
+      type: object
+      properties:
+        stars:
+          type: object
+          properties: 
+            impl:
+              type: string
+          description: Stars of the review
+          example: "Example not available"
+        review:
+          type: string
+          description: Review of the restaurant
+          example: "Nice place!"
+        reviewer_email:
+          type: string
+          description: Email of user who leave the review
+          example: "nick.miller@email.com"
