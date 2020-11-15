@@ -51,7 +51,7 @@ def error_message(code, message):
 
 def get_restaurants():
 
-    restaurants = RestaurantService.get_all_restaurants(db_session)
+    restaurants = RestaurantService.get_all_restaurants()
     if restaurants is None:
         return error_message("404", "Restaurants not found"), 404
     else:
@@ -78,7 +78,7 @@ def get_restaurant_name(restaurant_id):
 
 def get_restaurants_by_keyword(name):
 
-    restaurants = RestaurantService.get_restaurants_by_keyword_name(db_session, name)
+    restaurants = RestaurantService.get_restaurants_by_keyword_name(name)
     if restaurants is None:
         return error_message("404", "Restaurants not found"), 404
     else:
@@ -191,7 +191,7 @@ def get_random_reviews(restaurant_id, number):
 
 def get_restaurant_more_info(restaurant_id):
     # get restaurant and check if restaurant exists
-    restaurant = RestaurantService.get_restaurant(db_session, restaurant_id)
+    restaurant = RestaurantService.get_restaurant(restaurant_id)
     if restaurant is None:
         return error_message("404", "Restaurant not found"), 404
 
@@ -199,11 +199,11 @@ def get_restaurant_more_info(restaurant_id):
     info["Restaurant"] = serialize(restaurant)
 
     # get menus
-    menus = RestaurantService.get_menus(db_session, restaurant_id)
+    menus = RestaurantService.get_menus(restaurant_id)
     all_menus = []
     # get menu photos for each menu
     for menu in menus:
-        photos = RestaurantService.get_menu_photos(db_session, menu.id)
+        photos = RestaurantService.get_menu_photos(menu.id)
         json_menu = serialize(menu)
         photos_list = []
         for photo in photos:
@@ -213,15 +213,15 @@ def get_restaurant_more_info(restaurant_id):
     info["Menus"] = all_menus
 
     # get photos about restaurant
-    photos = RestaurantService.get_photos(db_session, restaurant_id)
+    photos = RestaurantService.get_photos(restaurant_id)
     info["Photos"] = list_obj_json("", photos)
 
     # get dishes
-    dishes = RestaurantService.get_dishes(db_session, restaurant_id)
+    dishes = RestaurantService.get_dishes(restaurant_id)
     info["Dishes"] = list_obj_json("", dishes)
 
     # get openings
-    openings = RestaurantService.get_openings(db_session, restaurant_id)
+    openings = RestaurantService.get_openings(restaurant_id)
     info["Openings"] = list_obj_json("", openings)
 
     return json.loads(json.dumps({"Restaurant_info": info}))
