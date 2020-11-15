@@ -84,6 +84,68 @@ paths:
             application/json:
               schema:
                   $ref: '#/components/schemas/Error'
+  /restaurants/{restaurant_id}/info:
+    get:
+      tags:
+      - Restaurants
+      summary: Get more info about the restaurant
+      operationId: app.get_restaurant_more_info
+      parameters:
+      - name: restaurant_id
+        in: path
+        description: Restaurant's Unique identifier
+        required: true
+        schema:
+          pattern: ^[a-zA-Z0-9-]+$
+          type: string
+      responses:
+        200:
+          description: Return restaurant
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Restaurant_info:
+                    type: object
+                    $ref: '#/components/schemas/Info'
+        404:
+          description: Restaurant not found
+          content: 
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
+  /restaurants/search/{name}:
+    get:
+      tags:
+      - Restaurants
+      summary: Get a restaurant restaurant with keyword name
+      operationId: app.get_restaurants_by_keyword
+      parameters:
+      - name: name
+        in: path
+        description: name to search
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Return all restaurants with keyword name
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  restaurants:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Restaurant'
+        404:
+          description: Restaurant not found
+          content: 
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
   /restaurants/{restaurant_id}/menu:
     get:
       tags:
@@ -972,3 +1034,31 @@ components:
           type: string
           description: Email of user who leave the review
           example: "nick.miller@email.com"
+    Info: 
+      required:
+      - Restaurant
+      - Menus
+      - Photos
+      - Dishes
+      - Openings
+      type: object
+      properties:
+        Restaurant:
+          type: object
+          $ref: '#/components/schemas/Restaurant'
+        Menus:
+          type: array
+          items:
+            $ref: '#/components/schemas/Menus'
+        Photos:
+          type: array
+          items:
+            $ref: '#/components/schemas/Photos'
+        Dishes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Dishes'
+        Openings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Openings'
