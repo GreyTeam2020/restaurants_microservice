@@ -188,16 +188,56 @@ def create_table(restaurant_id):
     return _get_response("Table added to restaurant", 200, False)
 
 
-def create_dish():
-    pass
+def create_dish(restaurant_id):
+    restaurant = RestaurantService.get_restaurant(db_session, restaurant_id)
+    if restaurant is None:
+        return error_message("404", "Restaurant not found"), 404
+
+    body = request.get_json()
+    RestaurantService.create_dish(
+        db_session, body["name"], body["price"], restaurant_id
+    )
+    return _get_response("Dish added", 200, False)
 
 
-def create_photo():
-    pass
+def create_photo(restaurant_id):
+    restaurant = RestaurantService.get_restaurant(db_session, restaurant_id)
+    if restaurant is None:
+        return error_message("404", "Restaurant not found"), 404
+
+    body = request.get_json()
+    RestaurantService.create_restaurant_photo(
+        db_session, body["url"], body["caption"], restaurant_id
+    )
+    return _get_response("Photo added", 200, False)
 
 
-def create_review():
-    pass
+def create_review(restaurant_id):
+    restaurant = RestaurantService.get_restaurant(db_session, restaurant_id)
+    if restaurant is None:
+        return error_message("404", "Restaurant not found"), 404
+
+    body = request.get_json()
+
+    RestaurantService.create_review(
+        db_session, body["review"], body["stars"], body["reviewer_email"], restaurant_id
+    )
+
+    return _get_response("Review added", 200, False)
+
+
+def create_menu_photo(menu_id):
+    menu = RestaurantService.get_menu(db_session, menu_id)
+    if menu is None:
+        return error_message("404", "Menu not found"), 404
+
+    body = request.get_json()
+
+    RestaurantService.create_review(
+        db_session, body["review"], body["stars"], body["reviewer_email"], restaurant_id
+    )
+
+    return _get_response("Photo of the menu added", 200, False)
 
 
 def delete_dish(dish_id):
