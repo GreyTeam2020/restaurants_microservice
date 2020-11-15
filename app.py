@@ -1,5 +1,5 @@
+import connexion, logging, database
 import os
-import connexion, logging
 from database import init_db
 from flask import jsonify, request
 from services.restaurant_service import RestaurantService
@@ -8,6 +8,7 @@ import json
 db_session = None
 
 _max_seats = 6
+
 
 def _get_response(message: str, code: int, is_custom_obj: bool = False):
     """
@@ -46,6 +47,7 @@ def error_message(code, message):
 
 
 def get_restaurants():
+
     restaurants = RestaurantService.get_all_restaurants(db_session)
     if restaurants is None:
         return error_message("404", "Restaurants not found"), 404
@@ -54,6 +56,7 @@ def get_restaurants():
 
 
 def get_restaurant(restaurant_id):
+
     restaurant = RestaurantService.get_restaurant(db_session, restaurant_id)
     if restaurant is None:
         return error_message("404", "Restaurant not found"), 404
@@ -62,6 +65,7 @@ def get_restaurant(restaurant_id):
 
 
 def get_menus(restaurant_id):
+
     restaurant = RestaurantService.get_restaurant(db_session, restaurant_id)
     if restaurant is None:
         return error_message("404", "Restaurant not found"), 404
@@ -86,6 +90,7 @@ def get_menus(restaurant_id):
 
 
 def get_dishes(restaurant_id):
+
     restaurant = RestaurantService.get_restaurant(db_session, restaurant_id)
     if restaurant is None:
         return error_message("404", "Restaurant not found"), 404
@@ -98,6 +103,7 @@ def get_dishes(restaurant_id):
 
 
 def get_openings(restaurant_id):
+
     restaurant = RestaurantService.get_restaurant(db_session, restaurant_id)
     if restaurant is None:
         return error_message("404", "Restaurant not found"), 404
@@ -110,6 +116,7 @@ def get_openings(restaurant_id):
 
 
 def get_tables(restaurant_id):
+
     restaurant = RestaurantService.get_restaurant(db_session, restaurant_id)
     if restaurant is None:
         return error_message("404", "Restaurant not found"), 404
@@ -122,6 +129,7 @@ def get_tables(restaurant_id):
 
 
 def get_photos(restaurant_id):
+
     restaurant = RestaurantService.get_restaurant(db_session, restaurant_id)
     if restaurant is None:
         return error_message("404", "Restaurant not found"), 404
@@ -134,11 +142,26 @@ def get_photos(restaurant_id):
 
 
 def get_reviews(restaurant_id):
+
     restaurant = RestaurantService.get_restaurant(db_session, restaurant_id)
     if restaurant is None:
         return error_message("404", "Restaurant not found"), 404
 
     reviews = RestaurantService.get_reviews(db_session, restaurant_id)
+
+    if len(reviews) == 0:
+        return error_message("404", "Reviews not found"), 404
+    else:
+        return list_obj_json("Reviews", reviews)
+
+
+def get_random_reviews(restaurant_id, number):
+
+    restaurant = RestaurantService.get_restaurant(db_session, restaurant_id)
+    if restaurant is None:
+        return error_message("404", "Restaurant not found"), 404
+
+    reviews = RestaurantService.get_reviews_random(db_session, restaurant_id, number)
     if len(reviews) == 0:
         return error_message("404", "Reviews not found"), 404
     else:
@@ -146,6 +169,7 @@ def get_reviews(restaurant_id):
 
 
 def create_restaurant():
+
     body = request.get_json()
 
     # check if the restaurant already exists (phone number, lat, lon, name)
@@ -160,7 +184,6 @@ def create_restaurant():
         is True
     ):
         return error_message("409", "Restaurant already exists"), 409
-
 
     # add restaurant
     RestaurantService.create_restaurant(db_session, body, _max_seats)
@@ -199,6 +222,7 @@ def create_photo(restaurant_id):
         return error_message("404", "Restaurant not found"), 404
 
     body = request.get_json()
+
     RestaurantService.create_restaurant_photo(
         db_session, body["url"], body["caption"], restaurant_id
     )
@@ -211,6 +235,10 @@ def create_review(restaurant_id):
         return error_message("404", "Restaurant not found"), 404
 
     body = request.get_json()
+
+    photo = RestaurantService.get_photo_with_url(db_session, body["url"])
+    if photo is not None:
+        return error_message("409", "URL already present"), 409
 
     RestaurantService.create_review(
         db_session, body["review"], body["stars"], body["reviewer_email"], restaurant_id
@@ -226,8 +254,12 @@ def create_menu_photo(menu_id):
 
     body = request.get_json()
 
-    RestaurantService.create_review(
-        db_session, body["review"], body["stars"], body["reviewer_email"], restaurant_id
+    photo = RestaurantService.get_menu_photo_with_url(db_session, body["url"])
+    if photo is not None:
+        return error_message("409", "URL already present"), 409
+
+    RestaurantService.create_menu_photo(
+        db_session, body["url"], body["caption"], menu_id
     )
 
     return _get_response("Photo of the menu added", 200, False)
@@ -249,7 +281,9 @@ def delete_table(table_id):
 
 # --------- END API definition --------------------------
 logging.basicConfig(level=logging.INFO)
+
 app = connexion.App(__name__)
+
 application = app.app
 if "GOUOUTSAFE_TEST" in os.environ and os.environ["GOUOUTSAFE_TEST"] == "1":
     db_session = init_db("sqlite:///tests/restaurant.db")

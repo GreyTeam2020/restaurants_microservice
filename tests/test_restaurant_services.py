@@ -1,7 +1,7 @@
 from services import RestaurantService
 
-class TestRestaurantsServices:
 
+class TestRestaurantsServices:
     def test_all_restaurant(self, db):
         """
         test about the services restaurant to test the result of all restaurants
