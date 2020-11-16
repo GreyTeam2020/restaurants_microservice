@@ -945,12 +945,9 @@ components:
       type: object
       properties:
         stars:
-          type: object
-          properties: 
-            impl:
-              type: string
-          description: Stars of the review
-          example: "Example not available"
+          type: number
+          description: Review of the restaurant
+          example: 3.5
         review:
           type: string
           description: Review of the restaurant
@@ -1091,12 +1088,9 @@ components:
       type: object
       properties:
         stars:
-          type: object
-          properties: 
-            impl:
-              type: string
-          description: Stars of the review
-          example: "Example not available"
+          type: number
+          description: Review of the restaurant
+          example: 3.5
         review:
           type: string
           description: Review of the restaurant
