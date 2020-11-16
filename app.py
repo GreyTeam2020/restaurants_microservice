@@ -27,17 +27,21 @@ def serialize(obj):
 
 
 # time objects are not serializeble in JSON so they are changed in strings
-def times_to_strings(obj_dict):
+def JSON_serialization(obj_dict):
     for key, value in obj_dict.items():
         if str(type(value)) == "<class 'datetime.time'>":
             obj_dict.update({key: value.strftime("%H:%M")})
+        elif str(type(value)) == "<class 'datetime.datetime'>":
+            obj_dict.update({key: value.strftime("%m/%d/%Y, %H:%M:%S")})
+        elif str(type(value)) == "<class 'decimal.Decimal'>":
+            obj_dict.update({key: float(value)})
     return obj_dict
 
 
 def list_obj_json(name_list, list_objs):
     objects = []
     for obj in list_objs:
-        objects.append(times_to_strings(serialize(obj)))
+        objects.append(JSON_serialization(serialize(obj)))
     if len(name_list) == 0:
         return objects
     else:
@@ -226,10 +230,8 @@ def create_restaurant():
     lon = body["restaurant"]["lon"]
 
     # if the restaurant already exists: error
-    if (
-            RestaurantService.get_restaurant_with_info(name, phone, lat, lon)
-            is True
-    ):
+
+    if RestaurantService.get_restaurant_with_info(name, phone, lat, lon) is True:
         return error_message("409", "Restaurant already exists"), 409
 
     # add restaurant
@@ -244,9 +246,7 @@ def create_table(restaurant_id):
         return error_message("404", "Restaurant not found"), 404
 
     body = request.get_json()
-    RestaurantService.create_table(
-        body["name"], body["max_seats"], restaurant_id
-    )
+    RestaurantService.create_table(body["name"], body["max_seats"], restaurant_id)
     return _get_response("Table added to restaurant", 200)
 
 
@@ -256,9 +256,7 @@ def create_dish(restaurant_id):
         return error_message("404", "Restaurant not found"), 404
 
     body = request.get_json()
-    RestaurantService.create_dish(
-        body["name"], body["price"], restaurant_id
-    )
+    RestaurantService.create_dish(body["name"], body["price"], restaurant_id)
     return _get_response("Dish added", 200)
 
 
@@ -268,6 +266,10 @@ def create_photo(restaurant_id):
         return error_message("404", "Restaurant not found"), 404
 
     body = request.get_json()
+
+    photo = RestaurantService.get_menu_photo_with_url(body["url"])
+    if photo is not None:
+        return error_message("409", "URL already present"), 409
 
     RestaurantService.create_restaurant_photo(
         body["url"], body["caption"], restaurant_id
@@ -281,10 +283,6 @@ def create_review(restaurant_id):
         return error_message("404", "Restaurant not found"), 404
 
     body = request.get_json()
-
-    photo = RestaurantService.get_photo_with_url(body["url"])
-    if photo is not None:
-        return error_message("409", "URL already present"), 409
 
     RestaurantService.create_review(
         body["review"], body["stars"], body["reviewer_email"], restaurant_id
@@ -304,9 +302,7 @@ def create_menu_photo(menu_id):
     if photo is not None:
         return error_message("409", "URL already present"), 409
 
-    RestaurantService.create_menu_photo(
-        body["url"], body["caption"], menu_id
-    )
+    RestaurantService.create_menu_photo(body["url"], body["caption"], menu_id)
 
     return _get_response("Photo of the menu added", 200)
 

@@ -10,8 +10,6 @@ from database import (
     MenuPhotoGallery,
 )
 
-from flask import current_app
-
 import datetime
 from sqlalchemy.sql.expression import func
 
@@ -53,13 +51,13 @@ class RestaurantService:
         db_session = current_app.config["DB_SESSION"]
         restaurant = (
             db_session.query(Restaurant)
-                .filter(
+            .filter(
                 Restaurant.name == r_name,
                 Restaurant.phone == r_phone,
                 Restaurant.lat == r_lat,
                 Restaurant.lon == r_lon,
             )
-                .first()
+            .first()
         )
         if restaurant is None:
             # the restaurant doesn't exist
@@ -76,8 +74,8 @@ class RestaurantService:
         db_session = current_app.config["DB_SESSION"]
         restaurant = (
             db_session.query(Restaurant)
-                .filter(Restaurant.name.ilike("%{}%".format(name)))
-                .all()
+            .filter(Restaurant.name.ilike("%{}%".format(name)))
+            .all()
         )
         return restaurant
 
@@ -107,8 +105,8 @@ class RestaurantService:
         db_session = current_app.config["DB_SESSION"]
         photos = (
             db_session.query(MenuPhotoGallery)
-                .filter(menu_id == MenuPhotoGallery.menu_id)
-                .all()
+            .filter(menu_id == MenuPhotoGallery.menu_id)
+            .all()
         )
         return photos
 
@@ -120,8 +118,8 @@ class RestaurantService:
         db_session = current_app.config["DB_SESSION"]
         photo = (
             db_session.query(MenuPhotoGallery)
-                .filter(url == MenuPhotoGallery.url)
-                .first()
+            .filter(url == MenuPhotoGallery.url)
+            .first()
         )
         return photo
 
@@ -133,8 +131,8 @@ class RestaurantService:
         db_session = current_app.config["DB_SESSION"]
         dishes = (
             db_session.query(MenuDish)
-                .filter(restaurant_id == MenuDish.restaurant_id)
-                .all()
+            .filter(restaurant_id == MenuDish.restaurant_id)
+            .all()
         )
         return dishes
 
@@ -146,8 +144,8 @@ class RestaurantService:
         db_session = current_app.config["DB_SESSION"]
         openings = (
             db_session.query(OpeningHours)
-                .filter(restaurant_id == OpeningHours.restaurant_id)
-                .all()
+            .filter(restaurant_id == OpeningHours.restaurant_id)
+            .all()
         )
         return openings
 
@@ -159,8 +157,8 @@ class RestaurantService:
         db_session = current_app.config["DB_SESSION"]
         tables = (
             db_session.query(RestaurantTable)
-                .filter(restaurant_id == RestaurantTable.restaurant_id)
-                .all()
+            .filter(restaurant_id == RestaurantTable.restaurant_id)
+            .all()
         )
         return tables
 
@@ -172,8 +170,8 @@ class RestaurantService:
         db_session = current_app.config["DB_SESSION"]
         photos = (
             db_session.query(PhotoGallery)
-                .filter(restaurant_id == PhotoGallery.restaurant_id)
-                .all()
+            .filter(restaurant_id == PhotoGallery.restaurant_id)
+            .all()
         )
         return photos
 
@@ -205,10 +203,10 @@ class RestaurantService:
         db_session = current_app.config["DB_SESSION"]
         reviews = (
             db_session.query(Review)
-                .filter(restaurant_id == Review.restaurant_id)
-                .order_by(func.random())
-                .limit(number)
-                .all()
+            .filter(restaurant_id == Review.restaurant_id)
+            .order_by(func.random())
+            .limit(number)
+            .all()
         )
 
         return reviews
@@ -288,6 +286,7 @@ class RestaurantService:
 
             db_session.add(new_menu)
             db_session.commit()
+        return True
 
     @staticmethod
     def create_table(name, max_seats, restaurant_id):
@@ -300,6 +299,7 @@ class RestaurantService:
         db_session = current_app.config["DB_SESSION"]
         db_session.add(new_table)
         db_session.commit()
+        return True
 
     @staticmethod
     def get_avg_rating_restaurant(restaurant_id: int) -> float:
@@ -344,7 +344,7 @@ class RestaurantService:
         db_session = current_app.config["DB_SESSION"]
         restaurants_list = db_session.query(Restaurant).all()
         for restaurant in restaurants_list:
-            RestaurantService.get_rating_restaurant(restaurant.id)
+            RestaurantService.get_avg_rating_restaurant(restaurant.id)
         return True
 
     @staticmethod
@@ -366,17 +366,21 @@ class RestaurantService:
         update_restaurant.id = data["restaurant"]["id"]
 
         db_session = current_app.config["DB_SESSION"]
-        q = db_session.query(Restaurant).filter_by(id=update_restaurant.id).update(
-            {
-                "name": update_restaurant.name,
-                "lat": update_restaurant.lat,
-                "lon": update_restaurant.lon,
-                "phone": update_restaurant.phone,
-                "covid_measures": update_restaurant.covid_measures,
-                "avg_time": update_restaurant.avg_time,
-                "rating": update_restaurant.rating,
-                "owner_email": update_restaurant.owner_email
-            }
+        q = (
+            db_session.query(Restaurant)
+            .filter_by(id=update_restaurant.id)
+            .update(
+                {
+                    "name": update_restaurant.name,
+                    "lat": update_restaurant.lat,
+                    "lon": update_restaurant.lon,
+                    "phone": update_restaurant.phone,
+                    "covid_measures": update_restaurant.covid_measures,
+                    "avg_time": update_restaurant.avg_time,
+                    "rating": update_restaurant.rating,
+                    "owner_email": update_restaurant.owner_email,
+                }
+            )
         )
         db_session.commit()
         db_session.flush()
@@ -394,6 +398,7 @@ class RestaurantService:
         db_session = current_app.config["DB_SESSION"]
         db_session.add(new_dish)
         db_session.commit()
+        return True
 
     @staticmethod
     def create_restaurant_photo(url, caption, restaurant_id):
@@ -405,6 +410,7 @@ class RestaurantService:
         db_session = current_app.config["DB_SESSION"]
         db_session.add(new_photo)
         db_session.commit()
+        return True
 
     @staticmethod
     def create_review(review, stars, reviewer_email, restaurant_id):
@@ -417,6 +423,7 @@ class RestaurantService:
         db_session = current_app.config["DB_SESSION"]
         db_session.add(new_review)
         db_session.commit()
+        return True
 
     @staticmethod
     def create_menu_photo(url, caption, menu_id):
@@ -428,3 +435,4 @@ class RestaurantService:
         db_session = current_app.config["DB_SESSION"]
         db_session.add(new_photo)
         db_session.commit()
+        return True
