@@ -284,6 +284,7 @@ class Utils:
         db_session.query(RestaurantTable).filter(
             RestaurantTable.restaurant_id == restaurant_id
         ).delete()
+        db_session.commit()
 
     def delete_dish_restaurant(restaurant_id):
         """
@@ -293,6 +294,7 @@ class Utils:
         db_session.query(MenuDish).filter(
             MenuDish.restaurant_id == restaurant_id
         ).delete()
+        db_session.commit()
 
     def delete_restaurant_photo(restaurant_id):
         """
@@ -302,6 +304,7 @@ class Utils:
         db_session.query(PhotoGallery).filter(
             PhotoGallery.restaurant_id == restaurant_id
         ).delete()
+        db_session.commit()
 
     def delete_review_restaurant(restaurant_id):
         """
@@ -309,6 +312,7 @@ class Utils:
         """
         db_session = current_app.config["DB_SESSION"]
         db_session.query(Review).filter(Review.restaurant_id == restaurant_id).delete()
+        db_session.commit()
 
     def delete_menu_photo_by_menu(menu_id):
         """
@@ -318,6 +322,7 @@ class Utils:
         db_session.query(MenuPhotoGallery).filter(
             MenuPhotoGallery.menu_id == menu_id
         ).delete()
+        db_session.commit()
 
     @staticmethod
     def json_create_restaurant():
