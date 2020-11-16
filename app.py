@@ -50,7 +50,6 @@ def error_message(code, message):
 
 
 def get_restaurants():
-
     restaurants = RestaurantService.get_all_restaurants()
     if restaurants is None:
         return error_message("404", "Restaurants not found"), 404
@@ -59,7 +58,6 @@ def get_restaurants():
 
 
 def get_restaurant(restaurant_id):
-
     restaurant = RestaurantService.get_restaurant(restaurant_id)
     if restaurant is None:
         return error_message("404", "Restaurant not found"), 404
@@ -68,7 +66,6 @@ def get_restaurant(restaurant_id):
 
 
 def get_restaurant_name(restaurant_id):
-
     restaurant = RestaurantService.get_restaurant(restaurant_id)
     if restaurant is None:
         return error_message("404", "Restaurant not found"), 404
@@ -77,7 +74,6 @@ def get_restaurant_name(restaurant_id):
 
 
 def get_restaurants_by_keyword(name):
-
     restaurants = RestaurantService.get_restaurants_by_keyword_name(name)
     if restaurants is None:
         return error_message("404", "Restaurants not found"), 404
@@ -86,7 +82,6 @@ def get_restaurants_by_keyword(name):
 
 
 def get_menus(restaurant_id):
-
     restaurant = RestaurantService.get_restaurant(restaurant_id)
     if restaurant is None:
         return error_message("404", "Restaurant not found"), 404
@@ -111,7 +106,6 @@ def get_menus(restaurant_id):
 
 
 def get_dishes(restaurant_id):
-
     restaurant = RestaurantService.get_restaurant(restaurant_id)
     if restaurant is None:
         return error_message("404", "Restaurant not found"), 404
@@ -124,7 +118,6 @@ def get_dishes(restaurant_id):
 
 
 def get_openings(restaurant_id):
-
     restaurant = RestaurantService.get_restaurant(restaurant_id)
     if restaurant is None:
         return error_message("404", "Restaurant not found"), 404
@@ -137,7 +130,6 @@ def get_openings(restaurant_id):
 
 
 def get_tables(restaurant_id):
-
     restaurant = RestaurantService.get_restaurant(restaurant_id)
     if restaurant is None:
         return error_message("404", "Restaurant not found"), 404
@@ -150,7 +142,6 @@ def get_tables(restaurant_id):
 
 
 def get_photos(restaurant_id):
-
     restaurant = RestaurantService.get_restaurant(restaurant_id)
     if restaurant is None:
         return error_message("404", "Restaurant not found"), 404
@@ -163,7 +154,6 @@ def get_photos(restaurant_id):
 
 
 def get_reviews(restaurant_id):
-
     restaurant = RestaurantService.get_restaurant(restaurant_id)
     if restaurant is None:
         return error_message("404", "Restaurant not found"), 404
@@ -177,7 +167,6 @@ def get_reviews(restaurant_id):
 
 
 def get_random_reviews(restaurant_id, number):
-
     restaurant = RestaurantService.get_restaurant(restaurant_id)
     if restaurant is None:
         return error_message("404", "Restaurant not found"), 404
@@ -228,7 +217,6 @@ def get_restaurant_more_info(restaurant_id):
 
 
 def create_restaurant():
-
     body = request.get_json()
 
     # check if the restaurant already exists (phone number, lat, lon, name)
@@ -238,7 +226,9 @@ def create_restaurant():
     lon = body["restaurant"]["lon"]
 
     # if the restaurant already exists: error
+
     if RestaurantService.get_restaurant_with_info(name, phone, lat, lon) is True:
+
         return error_message("409", "Restaurant already exists"), 409
 
     # add restaurant
@@ -314,13 +304,13 @@ def create_menu_photo(menu_id):
     return _get_response("Photo of the menu added", 200)
 
 
-def get_rating_restaurant(restaurant_id):
+def get_avg_rating_restaurant(restaurant_id):
     """
     get avg of rating for a restaurant
     """
     if restaurant_id is None:
         return error_message("400", "dish_id not specified"), 400
-    rating = RestaurantService.get_rating_restaurant(restaurant_id)
+    rating = RestaurantService.get_avg_rating_restaurant(restaurant_id)
     return serialize(rating)
 
 
@@ -336,7 +326,13 @@ def update_restaurant_info():
     """
     update the restaurant infos
     """
-    RestaurantService.update_restaurant_info()
+    data = request.get_json()
+    result = RestaurantService.update_restaurant_info(data)
+
+    if result:
+        return error_message("500", "Restaurant data has not been modified."), 500
+    else:
+        return _get_response("Restaurant data has been modified.", 200)
 
 
 def delete_dish(dish_id):
