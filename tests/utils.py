@@ -16,6 +16,9 @@ import datetime
 class Utils:
     @staticmethod
     def create_restaurant():
+        """
+        This method creates a new restaurant
+        """
         new_restaurant = Restaurant()
         new_restaurant.name = "Test restaurant"
         new_restaurant.lat = "46.234"
@@ -33,12 +36,18 @@ class Utils:
 
     @staticmethod
     def delete_restaurant(restaurant_id):
+        """
+        This method deletes a restaurant
+        """
         db_session = current_app.config["DB_SESSION"]
         db_session.query(Restaurant).filter(Restaurant.id == restaurant_id).delete()
         db_session.commit()
 
     @staticmethod
     def create_menu(restaurant_id, cuisine):
+        """
+        This method creates a new menu
+        """
         db_session = current_app.config["DB_SESSION"]
         new_menu = Menu()
         new_menu.restaurant_id = restaurant_id
@@ -51,12 +60,18 @@ class Utils:
 
     @staticmethod
     def delete_menu(menu_id):
+        """
+        This method deletes a menu
+        """
         db_session = current_app.config["DB_SESSION"]
         db_session.query(Menu).filter(Menu.id == menu_id).delete()
         db_session.commit()
 
     @staticmethod
     def create_menu_photo(menu_id, url):
+        """
+        This method creates a new photo of a menu
+        """
         new_photo = MenuPhotoGallery()
         new_photo.menu_id = menu_id
         new_photo.url = url
@@ -69,6 +84,9 @@ class Utils:
 
     @staticmethod
     def delete_menu_photo(photo_id):
+        """
+        This method deltes a photo of the specified menu
+        """
         db_session = current_app.config["DB_SESSION"]
         db_session.query(MenuPhotoGallery).filter(
             MenuPhotoGallery.id == photo_id
@@ -77,6 +95,9 @@ class Utils:
 
     @staticmethod
     def create_dish(restaurant_id, name):
+        """
+        This method creates a new dish
+        """
         new_dish = MenuDish()
         new_dish.restaurant_id = restaurant_id
         new_dish.name = name
@@ -89,12 +110,18 @@ class Utils:
 
     @staticmethod
     def delete_dish(dish_id):
+        """
+        This method deletes a dish
+        """
         db_session = current_app.config["DB_SESSION"]
         db_session.query(MenuDish).filter(MenuDish.id == dish_id).delete()
         db_session.commit()
 
     @staticmethod
     def create_openings(restaurant_id, week_day):
+        """
+        This method creates a new opening hour
+        """
         new_opening = OpeningHours()
         new_opening.restaurant_id = restaurant_id
         new_opening.week_day = week_day
@@ -110,6 +137,9 @@ class Utils:
 
     @staticmethod
     def delete_openings(opening):
+        """
+        This method deletes an opening hour
+        """
         db_session = current_app.config["DB_SESSION"]
         db_session.query(OpeningHours).filter(
             OpeningHours.restaurant_id == opening.restaurant_id,
@@ -119,6 +149,9 @@ class Utils:
 
     @staticmethod
     def create_table(restaurant_id):
+        """
+        This method creates a new table
+        """
         new_table = RestaurantTable()
         new_table.restaurant_id = restaurant_id
         new_table.name = ""
@@ -132,6 +165,9 @@ class Utils:
 
     @staticmethod
     def delete_table(table_id):
+        """
+        This method deletes a table
+        """
         db_session = current_app.config["DB_SESSION"]
         db_session.query(RestaurantTable).filter(
             RestaurantTable.id == table_id
@@ -140,6 +176,9 @@ class Utils:
 
     @staticmethod
     def create_photo(restaurant_id, url):
+        """
+        This method creates a new photo of the restaurant
+        """
         new_photo = PhotoGallery()
         new_photo.restaurant_id = restaurant_id
         new_photo.url = url
@@ -152,12 +191,18 @@ class Utils:
 
     @staticmethod
     def delete_photo(photo_id):
+        """
+        This method deletes a photo of the restaurant
+        """
         db_session = current_app.config["DB_SESSION"]
         db_session.query(PhotoGallery).filter(PhotoGallery.id == photo_id).delete()
         db_session.commit()
 
     @staticmethod
     def create_review(restaurant_id, stars):
+        """
+        This method creates a new review for a restaurant
+        """
         new_review = Review()
         new_review.restaurant_id = restaurant_id
         new_review.review = "nice!"
@@ -171,16 +216,25 @@ class Utils:
 
     @staticmethod
     def delete_review(review_id):
+        """
+        This method deletes a review
+        """
         db_session = current_app.config["DB_SESSION"]
         db_session.query(Review).filter(Review.id == review_id).delete()
         db_session.commit()
 
     def get_dish(dish_id):
+        """
+        This method gets a dish
+        """
         db_session = current_app.config["DB_SESSION"]
         dish = db_session.query(MenuDish).filter(dish_id == MenuDish.id).first()
         return dish
 
     def get_table(table_id):
+        """
+        This method gets a table
+        """
         db_session = current_app.config["DB_SESSION"]
         table = (
             db_session.query(RestaurantTable)
@@ -190,6 +244,10 @@ class Utils:
         return table
 
     def delete_creation_restaurant(data):
+        """
+        This method deletes all data inserted in the database to create a
+        new restaurant
+        """
         name = data["restaurant"]["name"]
         phone = data["restaurant"]["phone"]
         lat = data["restaurant"]["lat"]
@@ -218,28 +276,43 @@ class Utils:
         db_session.query(Restaurant).filter(Restaurant.id == restaurant.id).delete()
 
     def delete_table_restaurant(restaurant_id):
+        """
+        This method deletes tables of a restaurant
+        """
         db_session = current_app.config["DB_SESSION"]
         db_session.query(RestaurantTable).filter(
             RestaurantTable.restaurant_id == restaurant_id
         ).delete()
 
     def delete_dish_restaurant(restaurant_id):
+        """
+        This method deletes dishes of a restaurantt
+        """
         db_session = current_app.config["DB_SESSION"]
         db_session.query(MenuDish).filter(
             MenuDish.restaurant_id == restaurant_id
         ).delete()
 
     def delete_restaurant_photo(restaurant_id):
+        """
+        This method deletes restaurant photos
+        """
         db_session = current_app.config["DB_SESSION"]
         db_session.query(PhotoGallery).filter(
             PhotoGallery.restaurant_id == restaurant_id
         ).delete()
 
     def delete_review_restaurant(restaurant_id):
+        """
+        This method deletes restaurant reviews
+        """
         db_session = current_app.config["DB_SESSION"]
         db_session.query(Review).filter(Review.restaurant_id == restaurant_id).delete()
 
     def delete_menu_photo_by_menu(menu_id):
+        """
+        This method deletes menu photos
+        """
         db_session = current_app.config["DB_SESSION"]
         db_session.query(MenuPhotoGallery).filter(
             MenuPhotoGallery.menu_id == menu_id
@@ -247,6 +320,9 @@ class Utils:
 
     @staticmethod
     def json_create_restaurant():
+        """
+        This method creates a JSON object to create a restaurant
+        """
         return {
             "menu": ["Italian food", "Chinese food"],
             "opening": [
@@ -280,18 +356,30 @@ class Utils:
 
     @staticmethod
     def json_table():
+        """
+        This method creates a JSON object to create a table
+        """
         return {"max_seats": 3, "name": "Red table"}
 
     @staticmethod
     def json_dish():
+        """
+        This method creates a JSON object to create a dish
+        """
         return {"name": "Pizza", "price": 6.5}
 
     @staticmethod
-    def json_restaurant_photo():
+    def json_photo():
+        """
+        This method creates a JSON object to create a photo
+        """
         return {"caption": "Photo 1", "url": "http://test_photo.safe"}
 
     @staticmethod
     def json_review():
+        """
+        This method creates a JSON object to create a review
+        """
         return {
             "review": "Nice place!",
             "reviewer_email": "nick.miller@email.com",
@@ -299,11 +387,10 @@ class Utils:
         }
 
     @staticmethod
-    def json_menu_photo():
-        return {"caption": "Photo 1", "url": "http://test_photo.safe"}
-
-    @staticmethod
     def json_restaurant(restaurant_id):
+        """
+        This method creates a JSON object to update a restaurant
+        """
         return {
             "restaurant": {
                 "id": restaurant_id,
