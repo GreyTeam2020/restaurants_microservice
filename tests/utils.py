@@ -274,6 +274,7 @@ class Utils:
 
         db_session.query(Menu).filter(Menu.restaurant_id == restaurant.id).delete()
         db_session.query(Restaurant).filter(Restaurant.id == restaurant.id).delete()
+        db_session.commit()
 
     def delete_table_restaurant(restaurant_id):
         """
