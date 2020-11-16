@@ -24,12 +24,6 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Restaurant'
-        404:
-          description: Restaurants not found
-          content: 
-            application/json:
-              schema:
-                  $ref: '#/components/schemas/Error'
   /restaurants/{restaurant_id}:
     get:
       tags:
@@ -140,12 +134,6 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Restaurant'
-        404:
-          description: Restaurant not found
-          content: 
-            application/json:
-              schema:
-                  $ref: '#/components/schemas/Error'
   /restaurants/{restaurant_id}/menu:
     get:
       tags:
@@ -173,7 +161,7 @@ paths:
                     items:
                       $ref: '#/components/schemas/Menus'
         404:
-          description: Menu not found
+          description: Restaurant not found
           content: 
             application/json:
               schema:
@@ -240,7 +228,7 @@ paths:
                     items:
                       $ref: '#/components/schemas/Dishes'
         404:
-          description: Dishes not found
+          description: Restaurant not found
           content: 
             application/json:
               schema:
@@ -300,7 +288,7 @@ paths:
                     items:
                       $ref: '#/components/schemas/Openings'
         404:
-          description: Opening hours not found
+          description: Restaurant not found
           content: 
             application/json:
               schema:
@@ -332,7 +320,7 @@ paths:
                     items:
                       $ref: '#/components/schemas/Tables'
         404:
-          description: Tables not found
+          description: Restaurant not found
           content: 
             application/json:
               schema:
@@ -392,7 +380,7 @@ paths:
                     items:
                       $ref: '#/components/schemas/Photos'
         404:
-          description: Photos not found
+          description: Restaurant not found
           content: 
             application/json:
               schema:
@@ -458,7 +446,7 @@ paths:
                     items:
                       $ref: '#/components/schemas/Reviews'
         404:
-          description: Reviews not found
+          description: Restaurant not found
           content: 
             application/json:
               schema:
@@ -524,12 +512,11 @@ paths:
                     items:
                       $ref: '#/components/schemas/Reviews'
         404:
-          description: Reviews not found
+          description: Restaurant not found
           content: 
             application/json:
               schema:
                   $ref: '#/components/schemas/Error'
-
   /restaurants/{restaurant_id}/avg_rating:
     get:
       tags:
