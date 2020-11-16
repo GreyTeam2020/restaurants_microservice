@@ -268,6 +268,10 @@ def create_photo(restaurant_id):
 
     body = request.get_json()
 
+    photo = RestaurantService.get_menu_photo_with_url(body["url"])
+    if photo is not None:
+        return error_message("409", "URL already present"), 409
+
     RestaurantService.create_restaurant_photo(
         body["url"], body["caption"], restaurant_id
     )
