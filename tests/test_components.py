@@ -20,15 +20,6 @@ class TestComponents:
         json_data = response.json
         assert len(json_data["restaurants"]) == 2
 
-    def test_get_restaurants_ko_404(self, client, db):
-        """
-        Test get restaurants not found (404)
-        """
-        Utils.delete_table_restaurant(1)
-        Utils.delete_table_restaurant(2)
-        response = client.get("/restaurants", follow_redirects=True)
-        assert response.status_code == 404
-
     def test_get_restaurant_ok(self, client, db):
         """
         Test get restaurant by id
@@ -82,3 +73,9 @@ class TestComponents:
         json_data['restaurant']['phone'] = None
         response = client.post("/restaurants/create", json=json_data, follow_redirects=True)
         assert response.status_code == 400
+
+'''
+Mariagiovanna: Dishes, Tables, Menu, Opening Hours 
+
+Renato: Restaurants, Photos, Reviews
+'''

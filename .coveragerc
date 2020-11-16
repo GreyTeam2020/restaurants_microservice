@@ -1,0 +1,8 @@
+[run]
+omit =
+    tests/fixtures/*
+    setup.py
+    services/__init__.py
+    __init__.py
+    database.py
+    .tox/*
