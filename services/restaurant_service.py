@@ -286,6 +286,7 @@ class RestaurantService:
 
             db_session.add(new_menu)
             db_session.commit()
+        return True
 
     @staticmethod
     def create_table(name, max_seats, restaurant_id):
@@ -298,6 +299,7 @@ class RestaurantService:
         db_session = current_app.config["DB_SESSION"]
         db_session.add(new_table)
         db_session.commit()
+        return True
 
     @staticmethod
     def get_avg_rating_restaurant(restaurant_id: int) -> float:
@@ -396,6 +398,7 @@ class RestaurantService:
         db_session = current_app.config["DB_SESSION"]
         db_session.add(new_dish)
         db_session.commit()
+        return True
 
     @staticmethod
     def create_restaurant_photo(url, caption, restaurant_id):
@@ -407,6 +410,7 @@ class RestaurantService:
         db_session = current_app.config["DB_SESSION"]
         db_session.add(new_photo)
         db_session.commit()
+        return True
 
     @staticmethod
     def create_review(review, stars, reviewer_email, restaurant_id):
@@ -419,6 +423,7 @@ class RestaurantService:
         db_session = current_app.config["DB_SESSION"]
         db_session.add(new_review)
         db_session.commit()
+        return True
 
     @staticmethod
     def create_menu_photo(url, caption, menu_id):
@@ -430,3 +435,4 @@ class RestaurantService:
         db_session = current_app.config["DB_SESSION"]
         db_session.add(new_photo)
         db_session.commit()
+        return True

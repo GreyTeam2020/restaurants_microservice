@@ -2,6 +2,9 @@ from services import RestaurantService
 from utils import Utils
 
 
+_max_seats = 6
+
+
 class TestRestaurantsServices:
     def test_all_restaurant(self):
         """
@@ -322,9 +325,12 @@ class TestRestaurantsServices:
         Utils.delete_review(new_review3.id)
         Utils.delete_restaurant(new_restaurant.id)
 
-    def test_delete_dishes_ok(self):
+    def test_delete_dish_ok(self):
         new_restaurant = Utils.create_restaurant()
         new_dish = Utils.create_dish(new_restaurant.id, "Pizza")
+
+        dish = Utils.get_dish(new_dish.id)
+        assert dish is not None
 
         response = RestaurantService.delete_dish(new_dish.id)
         assert response is True
@@ -334,7 +340,7 @@ class TestRestaurantsServices:
 
         Utils.delete_restaurant(new_restaurant.id)
 
-    def test_get_dishes_not_exists_not_fail(self):
+    def test_get_dish_not_exists_not_fail(self):
         new_restaurant = Utils.create_restaurant()
         new_dish = Utils.create_dish(new_restaurant.id, "Pizza")
 
@@ -347,91 +353,108 @@ class TestRestaurantsServices:
         Utils.delete_dish(new_dish.id)
         Utils.delete_restaurant(new_restaurant.id)
 
+    def test_delete_table_ok(self):
+        new_restaurant = Utils.create_restaurant()
+        new_table = Utils.create_table(new_restaurant.id)
+
+        table = Utils.get_table(new_table.id)
+        assert table is not None
+
+        response = RestaurantService.delete_table(new_table.id)
+        assert response is True
+
+        table = Utils.get_table(new_table.id)
+        assert table is None
+
+        Utils.delete_restaurant(new_restaurant.id)
+
+    def test_get_table_not_exists_not_fail(self):
+        new_restaurant = Utils.create_restaurant()
+        new_table = Utils.create_table(new_restaurant.id)
+
+        response = RestaurantService.delete_table(new_table.id + 1)
+        assert response is True
+
+        table = Utils.get_table(new_table.id)
+        assert table is not None
+
+        Utils.delete_table(new_table.id)
+        Utils.delete_restaurant(new_restaurant.id)
+
+    def test_create_restaurant_ok(self):
+
+        body = Utils.json_create_restaurant()
+
+        response = RestaurantService.create_restaurant(body, _max_seats)
+        assert response is True
+
+        Utils.delete_creation_restaurant(body)
+
+    def test_create_table_ok(self):
+        new_restaurant = Utils.create_restaurant()
+        body = Utils.json_table()
+
+        response = RestaurantService.create_table(
+            body["name"], body["max_seats"], new_restaurant.id
+        )
+        assert response is True
+
+        Utils.delete_table_restaurant(new_restaurant.id)
+        Utils.delete_restaurant(new_restaurant.id)
+
+    def test_create_dish_ok(self):
+        new_restaurant = Utils.create_restaurant()
+        body = Utils.json_dish()
+
+        response = RestaurantService.create_dish(
+            body["name"], body["price"], new_restaurant.id
+        )
+        assert response is True
+
+        Utils.delete_dish_restaurant(new_restaurant.id)
+        Utils.delete_restaurant(new_restaurant.id)
+
+    def test_create_restaurant_photo_ok(self):
+        new_restaurant = Utils.create_restaurant()
+        body = Utils.json_restaurant_photo()
+
+        response = RestaurantService.create_restaurant_photo(
+            body["url"], body["caption"], new_restaurant.id
+        )
+        assert response is True
+
+        Utils.delete_restaurant_photo(new_restaurant.id)
+        Utils.delete_restaurant(new_restaurant.id)
+
+    def test_create_review_ok(self):
+        new_restaurant = Utils.create_restaurant()
+        body = Utils.json_review()
+
+        response = RestaurantService.create_review(
+            body["review"], body["stars"], body["reviewer_email"], new_restaurant.id
+        )
+        assert response is True
+
+        Utils.delete_review_restaurant(new_restaurant.id)
+        Utils.delete_restaurant(new_restaurant.id)
+
+    def test_create_menu_photo_ok(self):
+        new_restaurant = Utils.create_restaurant()
+        new_menu = Utils.create_menu(new_restaurant.id, "Italian food")
+        body = Utils.json_menu_photo()
+
+        response = RestaurantService.create_menu_photo(
+            body["url"], body["caption"], new_restaurant.id
+        )
+        assert response is True
+
+        Utils.delete_menu_photo_by_menu(new_restaurant.id)
+        Utils.delete_menu(new_menu.id)
+        Utils.delete_restaurant(new_restaurant.id)
+
     '''
 
-
-    @staticmethod
-    def delete_table(table_id):
-
-        db_session = current_app.config["DB_SESSION"]
-        db_session.query(RestaurantTable).filter_by(id=table_id).delete()
-        db_session.commit()
-        return True
-
-    @staticmethod
-    def create_restaurant(data, max_seats):
-        """
-        Method to create a restaurant
-        """
-
-        # add in restaurant table
-        new_restaurant = Restaurant()
-        new_restaurant.name = data["restaurant"]["name"]
-        new_restaurant.lat = data["restaurant"]["lat"]
-        new_restaurant.lon = data["restaurant"]["lon"]
-        new_restaurant.phone = data["restaurant"]["phone"]
-        new_restaurant.covid_measures = data["restaurant"]["covid_measures"]
-        new_restaurant.avg_time = data["restaurant"]["avg_time"]
-        new_restaurant.rating = data["restaurant"]["rating"]
-        new_restaurant.owner_email = data["restaurant"]["owner_email"]
-
-        db_session = current_app.config["DB_SESSION"]
-        db_session.add(new_restaurant)
-        db_session.commit()
-
-        # add tables in RestaurantTable table
-        number_tables = data["restaurant_tables"]
-        for i in range(number_tables):
-            RestaurantService.create_table("", max_seats, new_restaurant.id)
-
-        # insert opening hours
-        list_openings = data["opening"]
-        for opening in list_openings:
-            new_opening = OpeningHours()
-            new_opening.restaurant_id = new_restaurant.id
-            new_opening.week_day = opening["week_day"]
-
-            time_info = opening["open_lunch"].split(":")
-            new_opening.open_lunch = datetime.time(int(time_info[0]), int(time_info[1]))
-            time_info = str(opening["close_lunch"]).split(":")
-            new_opening.close_lunch = datetime.time(
-                int(time_info[0]), int(time_info[1])
-            )
-            time_info = str(opening["open_dinner"]).split(":")
-            new_opening.open_dinner = datetime.time(
-                int(time_info[0]), int(time_info[1])
-            )
-            time_info = str(opening["close_dinner"]).split(":")
-            new_opening.close_dinner = datetime.time(
-                int(time_info[0]), int(time_info[1])
-            )
-
-            db_session.add(new_opening)
-            db_session.commit()
-
-        # insert menus
-        for menu in data["menu"]:
-            new_menu = Menu()
-            new_menu.restaurant_id = new_restaurant.id
-            new_menu.cusine = menu
-            new_menu.description = ""
-
-            db_session.add(new_menu)
-            db_session.commit()
-
-    @staticmethod
-    def create_table(name, max_seats, restaurant_id):
-        new_table = RestaurantTable()
-        new_table.restaurant_id = restaurant_id
-        new_table.name = name
-        new_table.max_seats = max_seats
-        new_table.available = True
-
-        db_session = current_app.config["DB_SESSION"]
-        db_session.add(new_table)
-        db_session.commit()
-
-    @staticmethod
+     @staticmethod
     def get_avg_rating_restaurant(restaurant_id: int) -> float:
         """
         get avg of rating for a restaurant
@@ -513,50 +536,5 @@ class TestRestaurantsServices:
 
         # return True if a restaurant was modified
         return q != 0
-
-    @staticmethod
-    def create_dish(name, price, restaurant_id):
-        new_dish = MenuDish()
-        new_dish.restaurant_id = restaurant_id
-        new_dish.name = name
-        new_dish.price = price
-
-        db_session = current_app.config["DB_SESSION"]
-        db_session.add(new_dish)
-        db_session.commit()
-
-    @staticmethod
-    def create_restaurant_photo(url, caption, restaurant_id):
-        new_photo = PhotoGallery()
-        new_photo.restaurant_id = restaurant_id
-        new_photo.url = url
-        new_photo.caption = caption
-
-        db_session = current_app.config["DB_SESSION"]
-        db_session.add(new_photo)
-        db_session.commit()
-
-    @staticmethod
-    def create_review(review, stars, reviewer_email, restaurant_id):
-        new_review = Review()
-        new_review.restaurant_id = restaurant_id
-        new_review.review = review
-        new_review.stars = stars
-        new_review.reviewer_email = reviewer_email
-
-        db_session = current_app.config["DB_SESSION"]
-        db_session.add(new_review)
-        db_session.commit()
-
-    @staticmethod
-    def create_menu_photo(url, caption, menu_id):
-        new_photo = MenuPhotoGallery()
-        new_photo.menu_id = menu_id
-        new_photo.url = url
-        new_photo.caption = caption
-
-        db_session = current_app.config["DB_SESSION"]
-        db_session.add(new_photo)
-        db_session.commit()
 
         '''

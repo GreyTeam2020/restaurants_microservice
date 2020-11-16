@@ -232,7 +232,6 @@ def create_restaurant():
     # if the restaurant already exists: error
 
     if RestaurantService.get_restaurant_with_info(name, phone, lat, lon) is True:
-
         return error_message("409", "Restaurant already exists"), 409
 
     # add restaurant

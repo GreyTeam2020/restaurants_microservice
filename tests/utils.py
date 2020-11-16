@@ -180,14 +180,124 @@ class Utils:
         dish = db_session.query(MenuDish).filter(dish_id == MenuDish.id).first()
         return dish
 
-    @staticmethod
-    def json_restaurant():
+    def get_table(table_id):
+        db_session = current_app.config["DB_SESSION"]
+        table = (
+            db_session.query(RestaurantTable)
+            .filter(table_id == RestaurantTable.id)
+            .first()
+        )
+        return table
 
+    def delete_creation_restaurant(data):
+        name = data["restaurant"]["name"]
+        phone = data["restaurant"]["phone"]
+        lat = data["restaurant"]["lat"]
+        lon = data["restaurant"]["lon"]
+
+        db_session = current_app.config["DB_SESSION"]
+        restaurant = (
+            db_session.query(Restaurant)
+            .filter(
+                Restaurant.name == name,
+                Restaurant.phone == phone,
+                Restaurant.lat == lat,
+                Restaurant.lon == lon,
+            )
+            .first()
+        )
+
+        # delete menu , tables, restaurant
+        db_session.query(OpeningHours).filter(
+            OpeningHours.restaurant_id == restaurant.id
+        ).delete()
+
+        Utils.delete_table_restaurant(restaurant.id)
+
+        db_session.query(Menu).filter(Menu.restaurant_id == restaurant.id).delete()
+        db_session.query(Restaurant).filter(Restaurant.id == restaurant.id).delete()
+
+    def delete_table_restaurant(restaurant_id):
+        db_session = current_app.config["DB_SESSION"]
+        db_session.query(RestaurantTable).filter(
+            RestaurantTable.restaurant_id == restaurant_id
+        ).delete()
+
+    def delete_dish_restaurant(restaurant_id):
+        db_session = current_app.config["DB_SESSION"]
+        db_session.query(MenuDish).filter(
+            MenuDish.restaurant_id == restaurant_id
+        ).delete()
+
+    def delete_restaurant_photo(restaurant_id):
+        db_session = current_app.config["DB_SESSION"]
+        db_session.query(PhotoGallery).filter(
+            PhotoGallery.restaurant_id == restaurant_id
+        ).delete()
+
+    def delete_review_restaurant(restaurant_id):
+        db_session = current_app.config["DB_SESSION"]
+        db_session.query(Review).filter(Review.restaurant_id == restaurant_id).delete()
+
+    def delete_menu_photo_by_menu(menu_id):
+        db_session = current_app.config["DB_SESSION"]
+        db_session.query(MenuPhotoGallery).filter(
+            MenuPhotoGallery.menu_id == menu_id
+        ).delete()
+
+    @staticmethod
+    def json_create_restaurant():
         return {
-            "firstname": name,
-            "lastname": lastname,
-            "password": password,
-            "phone": phone,
-            "dateofbirth": "12/12/1996",
-            "email": "{}@gmail.com".format(name),
+            "menu": ["Italian food", "Chinese food"],
+            "opening": [
+                {
+                    "close_dinner": "22:00",
+                    "close_lunch": "15:30",
+                    "open_dinner": "19:00",
+                    "open_lunch": "11:30",
+                    "week_day": 3,
+                },
+                {
+                    "close_dinner": "22:00",
+                    "close_lunch": "15:30",
+                    "open_dinner": "19:00",
+                    "open_lunch": "11:30",
+                    "week_day": 1,
+                },
+            ],
+            "restaurant": {
+                "avg_time": 50,
+                "covid_measures": "Distance between tables",
+                "lat": 43.7118,
+                "lon": 10.4147,
+                "name": "Bobby's",
+                "owner_email": "bobby.sing@email.it",
+                "phone": 10528958,
+                "rating": 0,
+            },
+            "restaurant_tables": 5,
         }
+
+    @staticmethod
+    def json_table():
+        return {"max_seats": 3, "name": "Red table"}
+
+    @staticmethod
+    def json_dish():
+        return {"name": "Pizza", "price": 6.5}
+
+    @staticmethod
+    def json_restaurant_photo():
+        return {"caption": "Photo 1", "url": "http://test_photo.safe"}
+
+    @staticmethod
+    def json_review():
+        return {
+            "review": "Nice place!",
+            "reviewer_email": "nick.miller@email.com",
+            "stars": 3.5,
+        }
+
+    @staticmethod
+    def json_menu_photo():
+        return {"caption": "Photo 1", "url": "http://test_photo.safe"}
