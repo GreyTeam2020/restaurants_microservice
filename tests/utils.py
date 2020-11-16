@@ -157,6 +157,30 @@ class Utils:
         db_session.commit()
 
     @staticmethod
+    def create_review(restaurant_id):
+        new_review = Review()
+        new_review.restaurant_id = restaurant_id
+        new_review.review = "nice!"
+        new_review.stars = 3.5
+        new_review.reviewer_email = "john@email.com"
+
+        db_session = current_app.config["DB_SESSION"]
+        db_session.add(new_review)
+        db_session.commit()
+        return new_review
+
+    @staticmethod
+    def delete_review(review_id):
+        db_session = current_app.config["DB_SESSION"]
+        db_session.query(Review).filter(Review.id == review_id).delete()
+        db_session.commit()
+
+    def get_dish(dish_id):
+        db_session = current_app.config["DB_SESSION"]
+        dish = db_session.query(MenuDish).filter(dish_id == MenuDish.id).first()
+        return dish
+
+    @staticmethod
     def json_restaurant():
 
         return {

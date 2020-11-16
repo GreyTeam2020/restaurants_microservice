@@ -248,42 +248,107 @@ class TestRestaurantsServices:
         photos = RestaurantService.get_photo_with_url("http://phototest1.com")
         assert len(photos) == 0
 
+    def test_get_reviews_ok(self):
+        new_restaurant = Utils.create_restaurant()
+        new_review = Utils.create_review(new_restaurant.id)
+
+        reviews = RestaurantService.get_reviews(new_restaurant.id)
+        assert len(reviews) == 1
+
+        Utils.delete_review(new_review.id)
+        Utils.delete_restaurant(new_restaurant.id)
+
+    def test_get_reviews_not_exists(self):
+        new_restaurant = Utils.create_restaurant()
+
+        reviews = RestaurantService.get_reviews(new_restaurant.id)
+        assert len(reviews) == 0
+
+        Utils.delete_restaurant(new_restaurant.id)
+
+    def test_get_reviews_random_bigger_num_ok(self):
+        new_restaurant = Utils.create_restaurant()
+        new_review = Utils.create_review(new_restaurant.id)
+
+        reviews = RestaurantService.get_reviews_random(new_restaurant.id, 3)
+        assert len(reviews) == 1
+
+        Utils.delete_review(new_review.id)
+        Utils.delete_restaurant(new_restaurant.id)
+
+    def test_get_reviews_random_smaller_num_ok(self):
+        new_restaurant = Utils.create_restaurant()
+        new_review1 = Utils.create_review(new_restaurant.id)
+        new_review2 = Utils.create_review(new_restaurant.id)
+        new_review3 = Utils.create_review(new_restaurant.id)
+
+        reviews = RestaurantService.get_reviews_random(new_restaurant.id, 2)
+        assert len(reviews) == 2
+
+        Utils.delete_review(new_review1.id)
+        Utils.delete_review(new_review2.id)
+        Utils.delete_review(new_review3.id)
+        Utils.delete_restaurant(new_restaurant.id)
+
+    def test_get_reviews_random_not_exists(self):
+        new_restaurant = Utils.create_restaurant()
+
+        reviews = RestaurantService.get_reviews_random(new_restaurant.id, 5)
+        assert len(reviews) == 0
+
+        Utils.delete_restaurant(new_restaurant.id)
+
+    def test_get_reviews_random_0(self):
+        new_restaurant = Utils.create_restaurant()
+        new_review = Utils.create_review(new_restaurant.id)
+
+        reviews = RestaurantService.get_reviews_random(new_restaurant.id, 0)
+        assert len(reviews) == 0
+
+        Utils.delete_review(new_review.id)
+        Utils.delete_restaurant(new_restaurant.id)
+
+    def test_get_reviews_random_negative(self):
+        new_restaurant = Utils.create_restaurant()
+        new_review1 = Utils.create_review(new_restaurant.id)
+        new_review2 = Utils.create_review(new_restaurant.id)
+        new_review3 = Utils.create_review(new_restaurant.id)
+
+        reviews = RestaurantService.get_reviews_random(new_restaurant.id, -10)
+        assert len(reviews) == 3
+
+        Utils.delete_review(new_review1.id)
+        Utils.delete_review(new_review2.id)
+        Utils.delete_review(new_review3.id)
+        Utils.delete_restaurant(new_restaurant.id)
+
+    def test_delete_dishes_ok(self):
+        new_restaurant = Utils.create_restaurant()
+        new_dish = Utils.create_dish(new_restaurant.id, "Pizza")
+
+        response = RestaurantService.delete_dish(new_dish.id)
+        assert response is True
+
+        dish = Utils.get_dish(new_dish.id)
+        assert dish is None
+
+        Utils.delete_restaurant(new_restaurant.id)
+
+    def test_get_dishes_not_exists_not_fail(self):
+        new_restaurant = Utils.create_restaurant()
+        new_dish = Utils.create_dish(new_restaurant.id, "Pizza")
+
+        response = RestaurantService.delete_dish(new_dish.id + 1)
+        assert response is True
+
+        dish = Utils.get_dish(new_dish.id)
+        assert dish is not None
+
+        Utils.delete_dish(new_dish.id)
+        Utils.delete_restaurant(new_restaurant.id)
+
     '''
 
-
-    @staticmethod
-    def get_reviews(restaurant_id):
-        """
-        Method to return photos of the specified restaurant
-        """
-        db_session = current_app.config["DB_SESSION"]
-        review = (
-            db_session.query(Review).filter(restaurant_id == Review.restaurant_id).all()
-        )
-        return review
-
-    @staticmethod
-    def get_reviews_random(restaurant_id, number):
-        """
-        Method to return random reviews of the specified restaurant 
-        """
-        db_session = current_app.config["DB_SESSION"]
-        reviews = (
-            db_session.query(Review)
-            .filter(restaurant_id == Review.restaurant_id)
-            .order_by(func.random())
-            .limit(number)
-            .all()
-        )
-
-        return reviews
-
-    @staticmethod
-    def delete_dish(dish_id):
-        db_session = current_app.config["DB_SESSION"]
-        db_session.query(MenuDish).filter_by(id=dish_id).delete()
-        db_session.commit()
-        return True
 
     @staticmethod
     def delete_table(table_id):
