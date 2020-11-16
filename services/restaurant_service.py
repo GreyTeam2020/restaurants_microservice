@@ -344,7 +344,7 @@ class RestaurantService:
         db_session = current_app.config["DB_SESSION"]
         restaurants_list = db_session.query(Restaurant).all()
         for restaurant in restaurants_list:
-            RestaurantService.get_rating_restaurant(restaurant.id)
+            RestaurantService.get_avg_rating_restaurant(restaurant.id)
         return True
 
     @staticmethod

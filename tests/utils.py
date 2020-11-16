@@ -157,11 +157,11 @@ class Utils:
         db_session.commit()
 
     @staticmethod
-    def create_review(restaurant_id):
+    def create_review(restaurant_id, stars):
         new_review = Review()
         new_review.restaurant_id = restaurant_id
         new_review.review = "nice!"
-        new_review.stars = 3.5
+        new_review.stars = stars
         new_review.reviewer_email = "john@email.com"
 
         db_session = current_app.config["DB_SESSION"]
@@ -301,3 +301,19 @@ class Utils:
     @staticmethod
     def json_menu_photo():
         return {"caption": "Photo 1", "url": "http://test_photo.safe"}
+
+    @staticmethod
+    def json_restaurant(restaurant_id):
+        return {
+            "restaurant": {
+                "id": restaurant_id,
+                "avg_time": 50,
+                "covid_measures": "Distance between tables",
+                "lat": 43.7118,
+                "lon": 10.4147,
+                "name": "Bobby's",
+                "owner_email": "bobby.sing@email.it",
+                "phone": 10528958,
+                "rating": 0,
+            }
+        }

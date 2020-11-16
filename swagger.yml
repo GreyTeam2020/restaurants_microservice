@@ -946,6 +946,8 @@ components:
       properties:
         stars:
           type: number
+          minimum: 0
+          maximum: 5
           description: Review of the restaurant
           example: 3.5
         review:

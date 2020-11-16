@@ -1,8 +1,9 @@
 from services import RestaurantService
 from utils import Utils
-
+import unittest
 
 _max_seats = 6
+_stars = 2
 
 
 class TestRestaurantsServices:
@@ -253,7 +254,7 @@ class TestRestaurantsServices:
 
     def test_get_reviews_ok(self):
         new_restaurant = Utils.create_restaurant()
-        new_review = Utils.create_review(new_restaurant.id)
+        new_review = Utils.create_review(new_restaurant.id, _stars)
 
         reviews = RestaurantService.get_reviews(new_restaurant.id)
         assert len(reviews) == 1
@@ -271,7 +272,7 @@ class TestRestaurantsServices:
 
     def test_get_reviews_random_bigger_num_ok(self):
         new_restaurant = Utils.create_restaurant()
-        new_review = Utils.create_review(new_restaurant.id)
+        new_review = Utils.create_review(new_restaurant.id, _stars)
 
         reviews = RestaurantService.get_reviews_random(new_restaurant.id, 3)
         assert len(reviews) == 1
@@ -281,9 +282,9 @@ class TestRestaurantsServices:
 
     def test_get_reviews_random_smaller_num_ok(self):
         new_restaurant = Utils.create_restaurant()
-        new_review1 = Utils.create_review(new_restaurant.id)
-        new_review2 = Utils.create_review(new_restaurant.id)
-        new_review3 = Utils.create_review(new_restaurant.id)
+        new_review1 = Utils.create_review(new_restaurant.id, _stars)
+        new_review2 = Utils.create_review(new_restaurant.id, _stars)
+        new_review3 = Utils.create_review(new_restaurant.id, _stars)
 
         reviews = RestaurantService.get_reviews_random(new_restaurant.id, 2)
         assert len(reviews) == 2
@@ -303,7 +304,7 @@ class TestRestaurantsServices:
 
     def test_get_reviews_random_0(self):
         new_restaurant = Utils.create_restaurant()
-        new_review = Utils.create_review(new_restaurant.id)
+        new_review = Utils.create_review(new_restaurant.id, _stars)
 
         reviews = RestaurantService.get_reviews_random(new_restaurant.id, 0)
         assert len(reviews) == 0
@@ -313,9 +314,9 @@ class TestRestaurantsServices:
 
     def test_get_reviews_random_negative(self):
         new_restaurant = Utils.create_restaurant()
-        new_review1 = Utils.create_review(new_restaurant.id)
-        new_review2 = Utils.create_review(new_restaurant.id)
-        new_review3 = Utils.create_review(new_restaurant.id)
+        new_review1 = Utils.create_review(new_restaurant.id, _stars)
+        new_review2 = Utils.create_review(new_restaurant.id, _stars)
+        new_review3 = Utils.create_review(new_restaurant.id, _stars)
 
         reviews = RestaurantService.get_reviews_random(new_restaurant.id, -10)
         assert len(reviews) == 3
@@ -452,89 +453,70 @@ class TestRestaurantsServices:
         Utils.delete_menu(new_menu.id)
         Utils.delete_restaurant(new_restaurant.id)
 
-    '''
+    def test_get_restaurant_rating_ok_not_0(self):
+        new_restaurant = Utils.create_restaurant()
+        new_review1 = Utils.create_review(new_restaurant.id, 3)
+        new_review2 = Utils.create_review(new_restaurant.id, 5)
+        new_review3 = Utils.create_review(new_restaurant.id, 2.5)
 
-     @staticmethod
-    def get_avg_rating_restaurant(restaurant_id: int) -> float:
-        """
-        get avg of rating for a restaurant
-        This method perform the request to calculate the rating of the restaurants
-        with the review.
-        :param restaurant_id: the restaurant id
-        :return: the rating value, as 0.0 or 5.0
-        """
-        db_session = current_app.config["DB_SESSION"]
-        rating_value = 0.0
-        restaurant = db_session.query(Restaurant).filter_by(id=restaurant_id).first()
-        if restaurant is None:
-            raise Exception(
-                "Restaurant with id {} don't exist on database".format(restaurant_id)
-            )
-        reviews_list = (
-            db_session.query(Review).filter_by(restaurant_id=restaurant_id).all()
-        )
-        if (reviews_list is None) or (len(reviews_list) == 0):
-            return rating_value
+        rating = RestaurantService.get_avg_rating_restaurant(new_restaurant.id)
+        assert rating == 3.5
 
-        for review in reviews_list:
-            rating_value = rating_value + float(review.stars)
+        Utils.delete_review(new_review1.id)
+        Utils.delete_review(new_review2.id)
+        Utils.delete_review(new_review3.id)
+        Utils.delete_restaurant(new_restaurant.id)
 
-        rating_value = rating_value / float(len(reviews_list))
-        current_app.logger.debug(
-            "Rating calculate for restaurant with name {} is {}".format(
-                restaurant.name, rating_value
-            )
-        )
-        restaurant.rating = Decimal(rating_value)
-        db_session.commit()
-        return rating_value
+    def test_get_restaurant_rating_ok_0(self):
+        new_restaurant = Utils.create_restaurant()
+        new_review1 = Utils.create_review(new_restaurant.id, 0)
+        new_review2 = Utils.create_review(new_restaurant.id, 0)
 
-    @staticmethod
-    def calculate_rating_for_all_restaurant():
-        """
-        This method is used inside celery background task to calculate the rating for each restaurants
-        """
-        db_session = current_app.config["DB_SESSION"]
-        restaurants_list = db_session.query(Restaurant).all()
-        for restaurant in restaurants_list:
-            RestaurantService.get_rating_restaurant(restaurant.id)
-        return True
+        rating = RestaurantService.get_avg_rating_restaurant(new_restaurant.id)
+        assert rating == 0
 
-    @staticmethod
-    def update_restaurant_info(data):
-        """
-        update the restaurant infos
-        """
+        Utils.delete_review(new_review1.id)
+        Utils.delete_review(new_review2.id)
+        Utils.delete_restaurant(new_restaurant.id)
 
-        # put in model from json for better validation, debug, test
-        update_restaurant = Restaurant()
-        update_restaurant.name = data["restaurant"]["name"]
-        update_restaurant.lat = data["restaurant"]["lat"]
-        update_restaurant.lon = data["restaurant"]["lon"]
-        update_restaurant.phone = data["restaurant"]["phone"]
-        update_restaurant.covid_measures = data["restaurant"]["covid_measures"]
-        update_restaurant.avg_time = data["restaurant"]["avg_time"]
-        update_restaurant.rating = data["restaurant"]["rating"]
-        update_restaurant.owner_email = data["restaurant"]["owner_email"]
-        update_restaurant.id = data["restaurant"]["id"]
+    def test_get_restaurant_rating_ok_empty(self):
+        new_restaurant = Utils.create_restaurant()
 
-        db_session = current_app.config["DB_SESSION"]
-        q = db_session.query(Restaurant).filter_by(id=update_restaurant.id).update(
-            {
-                "name": update_restaurant.name,
-                "lat": update_restaurant.lat,
-                "lon": update_restaurant.lon,
-                "phone": update_restaurant.phone,
-                "covid_measures": update_restaurant.covid_measures,
-                "avg_time": update_restaurant.avg_time,
-                "rating": update_restaurant.rating,
-                "owner_email": update_restaurant.owner_email
-            }
-        )
-        db_session.commit()
-        db_session.flush()
+        rating = RestaurantService.get_avg_rating_restaurant(new_restaurant.id)
+        assert rating == 0
 
-        # return True if a restaurant was modified
-        return q != 0
+        Utils.delete_restaurant(new_restaurant.id)
 
-        '''
+    def test_get_restaurant_rating_restaurant_not_exists(self):
+        exception_raised = True
+        try:
+            RestaurantService.get_avg_rating_restaurant(20)
+            assert exception_raised is False
+        except:
+            assert exception_raised is True
+
+    def test_get_all_restaurant_rating_not_fail(self):
+        new_restaurant = Utils.create_restaurant()
+        new_review1 = Utils.create_review(new_restaurant.id, 3)
+        new_review2 = Utils.create_review(new_restaurant.id, 5)
+        new_review3 = Utils.create_review(new_restaurant.id, 2.5)
+
+        response = RestaurantService.calculate_rating_for_all_restaurant()
+        assert response is True
+
+        Utils.delete_review(new_review1.id)
+        Utils.delete_review(new_review2.id)
+        Utils.delete_review(new_review3.id)
+        Utils.delete_restaurant(new_restaurant.id)
+
+    def test_get_update_restaurant_info_ok(self):
+        new_restaurant = Utils.create_restaurant()
+        assert new_restaurant.name == "Test restaurant"
+
+        body = Utils.json_restaurant(new_restaurant.id)
+
+        response = RestaurantService.update_restaurant_info(body)
+        assert response is True
+        assert new_restaurant.name == "Bobby's"
+
+        Utils.delete_restaurant(new_restaurant.id)
