@@ -856,7 +856,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/OpeningsInsert'
-      OpeningsInsert:
+    OpeningsInsert:
         required:
           - week_day
           - open_lunch
@@ -891,7 +891,7 @@ components:
             format: date-time
             description: Time when the restaurant closes for dinner
             example: "22:00"
-      TableCreation:
+    TableCreation:
         required:
           - max_seats
           - name
@@ -907,7 +907,7 @@ components:
             maxLength: 100
             description: name of the table
             example: 'Red table'
-      DishCreation:
+    DishCreation:
         required:
           - name
           - price
@@ -923,7 +923,7 @@ components:
             minimum: 0
             description: price of the dish
             example: 10.50
-      PhotoCreation:
+    PhotoCreation:
         required:
           - caption
           - url
@@ -941,7 +941,7 @@ components:
             maxLength: 255
             description: url of the photo
             example: "http://photo1.safe"
-      ReviewCreation:
+    ReviewCreation:
         required:
           - stars
           - review
