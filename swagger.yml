@@ -693,11 +693,6 @@ components:
       - owner_email
       type: object
       properties:
-        id:
-          type: integer
-          description: Unique identifier
-          readOnly: true
-          example: 123
         name:
           maxLength: 100
           minLength: 1
@@ -737,7 +732,7 @@ components:
           example: "mario.rossi@mail.it"
     RestaurantId:
       required:
-        - -id
+        - id
         - name
         - lat
         - lon

@@ -209,7 +209,7 @@ def create_restaurant():
     rest = RestaurantService.create_restaurant(body, _max_seats)
     if rest is None:
         return _get_response("An error occur during the restaurants creation", 500)
-    return _get_response(JSON_serialization(rest), 200)
+    return _get_response(serialize(rest), 200)
 
 
 def create_table(restaurant_id):

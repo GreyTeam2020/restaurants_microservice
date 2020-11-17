@@ -570,8 +570,10 @@ class TestRestaurantsServices:
         """
         body = Utils.json_create_restaurant()
 
-        response = RestaurantService.create_restaurant(body, _max_seats)
-        assert response is True
+        restaurants = RestaurantService.create_restaurant(body, _max_seats)
+        assert restaurants is not None
+        assert body["restaurant"]["name"] == restaurants.name
+        assert restaurants.id > 0
 
         Utils.delete_creation_restaurant(body)
 
