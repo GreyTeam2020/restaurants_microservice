@@ -791,7 +791,6 @@ components:
         id:
           type: integer
           description: Unique identifier
-          readOnly: true
           example: 123
         name:
           maxLength: 100
