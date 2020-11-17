@@ -1,7 +1,7 @@
 import connexion, logging, database
 import os
 from database import init_db
-from flask import jsonify, request
+from flask import current_app, request
 from services.restaurant_service import RestaurantService
 import json
 
@@ -207,9 +207,11 @@ def create_restaurant():
         return error_message("409", "Restaurant already exists"), 409
 
     rest = RestaurantService.create_restaurant(body, _max_seats)
+    json_resp = serialize(rest)
     if rest is None:
         return _get_response("An error occur during the restaurants creation", 500)
-    return _get_response(serialize(rest), 200)
+    current_app.logger.debug("Result is: {}".format(json_resp))
+    return _get_response(json_resp, 200, True)
 
 
 def create_table(restaurant_id):
