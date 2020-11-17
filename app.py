@@ -71,7 +71,7 @@ def get_restaurant_name(restaurant_id):
     if restaurant is None:
         return error_message("404", "Restaurant not found"), 404
     else:
-        return json.loads(json.dumps({"result": restaurant.name}))
+        return _get_response(restaurant.name, 200)
 
 def get_restaurant_id_by_owner_email(owner_email):
 
