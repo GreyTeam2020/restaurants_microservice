@@ -168,7 +168,7 @@ def init_db(uri):
     )
     db.query = db_session.query_property()
     db.metadata.create_all(bind=engine)
-    
+
     q = db_session.query(Restaurant).filter(Restaurant.id == 1)
     restaurant = q.first()
     if restaurant is None:
@@ -234,5 +234,5 @@ def init_db(uri):
         second_menu.description = "oriental food"
         db_session.add(second_menu)
         db_session.commit()
-    
+
     return db_session

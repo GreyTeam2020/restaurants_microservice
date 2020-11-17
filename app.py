@@ -85,7 +85,7 @@ def get_menus(restaurant_id):
         return error_message("404", "Restaurant not found"), 404
 
     menus = RestaurantService.get_menus(restaurant_id)
-    
+
     all_menus = []
     # get menu photos for each menu
     for menu in menus:
