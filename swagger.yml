@@ -156,7 +156,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  Menus:
+                  menus:
                     type: array
                     items:
                       $ref: '#/components/schemas/Menus'
@@ -223,7 +223,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  Dishes:
+                  dishes:
                     type: array
                     items:
                       $ref: '#/components/schemas/Dishes'
@@ -283,7 +283,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  Openings:
+                  openings:
                     type: array
                     items:
                       $ref: '#/components/schemas/Openings'

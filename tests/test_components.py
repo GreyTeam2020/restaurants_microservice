@@ -184,8 +184,293 @@ class TestComponents:
         assert json_data['owner_email'] == "nick.miller@email.com" + changed
         '''
 
-'''
-Mariagiovanna: Dishes, Tables, Menu, Opening Hours 
+    '''
+    Mariagiovanna: Dishes, Tables, Menu, Opening Hours 
 
-Renato: Restaurants, Photos, Reviews
-'''
+    Renato: Restaurants, Photos, Reviews
+    '''
+
+
+    def test_get_dishes_ok_noresults(self, client, db):
+        """
+        Test search dishes of a restaurant, no results
+        """
+        restaurant = Utils.create_restaurant()
+        
+        response = client.get("/restaurants/"+ str(restaurant.id)+"/dishes", follow_redirects=True)
+        assert response.status_code == 200
+        json_data = response.json
+        assert len(json_data["dishes"]) == 0
+
+        Utils.delete_restaurant(restaurant.id)
+
+    def test_get_dishes_ok(self, client, db):
+        """
+        Test search dishes of a restaurant
+        """
+        restaurant = Utils.create_restaurant()
+        dish = Utils.create_dish(restaurant.id, "Pizza")
+
+        response = client.get("/restaurants/"+ str(restaurant.id)+"/dishes", follow_redirects=True)
+        assert response.status_code == 200
+        json_data = response.json
+        assert len(json_data["dishes"]) == 1
+
+        Utils.delete_dish(dish.id)
+        Utils.delete_restaurant(restaurant.id)
+
+    def test_get_dishes_restaurant_not_found(self, client, db):
+        """
+        Test search dishes of a restaurant that doesn't exist
+        """
+        restaurant_id = 100
+
+        response = client.get("/restaurants/"+ str(restaurant_id)+"/dishes", follow_redirects=True)
+        assert response.status_code == 404
+        json_data = response.json
+        assert json_data["message"] == "Restaurant not found"
+
+
+    def test_post_dishes_ok(self, client, db):
+        """
+        Test create a new dish
+        """
+        restaurant = Utils.create_restaurant()
+
+        body = Utils.json_dish()
+        response = client.post("/restaurants/"+ str(restaurant.id)+ "/dishes", json=body, follow_redirects=True)
+        assert response.status_code == 200
+        assert response.json["result"] == "Dish added"
+
+        Utils.delete_dish_restaurant(restaurant.id)
+        Utils.delete_restaurant(restaurant.id)
+
+    def test_post_dishes_restaurant_not_found(self, client, db):
+        """
+        Test create a new dish of a not existing restaurant
+        """
+        restaurant_id = 100
+
+        body = Utils.json_dish()
+        response = client.post("/restaurants/"+ str(restaurant_id)+ "/dishes", json=body, follow_redirects=True)
+        assert response.status_code == 404
+        json_data = response.json
+        assert json_data["message"] == "Restaurant not found"
+
+
+    def test_delete_dishes_ok(self, client, db):
+        """
+        Test delete a dish
+        """
+        restaurant = Utils.create_restaurant()
+        dish = Utils.create_dish(restaurant.id, "Pizza")
+        
+        response = client.delete("/restaurant/menu/"+str(dish.id), follow_redirects=True)
+        
+        assert response.status_code == 200
+        assert response.json["result"] == "OK"
+        assert Utils.get_dish(dish.id) is None
+
+        Utils.delete_restaurant(restaurant.id)
+
+
+    def test_get_tables_ok_noresults(self, client, db):
+        """
+        Test search table of a restaurant, no results
+        """
+        restaurant = Utils.create_restaurant()
+        
+        response = client.get("/restaurants/"+ str(restaurant.id)+"/tables", follow_redirects=True)
+        assert response.status_code == 200
+        json_data = response.json
+        assert len(json_data["Tables"]) == 0
+
+        Utils.delete_restaurant(restaurant.id)
+
+    def test_get_tables_ok(self, client, db):
+        """
+        Test search tables of a restaurant
+        """
+        restaurant = Utils.create_restaurant()
+        table = Utils.create_table(restaurant.id)
+
+        response = client.get("/restaurants/"+ str(restaurant.id)+"/tables", follow_redirects=True)
+        assert response.status_code == 200
+        json_data = response.json
+        assert len(json_data["Tables"]) == 1
+
+        Utils.delete_table(table.id)
+        Utils.delete_restaurant(restaurant.id)
+
+    def test_get_tables_restaurant_not_found(self, client, db):
+        """
+        Test search tables of a restaurant that doesn't exist
+        """
+        restaurant_id = 100
+
+        response = client.get("/restaurants/"+ str(restaurant_id)+"/tables", follow_redirects=True)
+        assert response.status_code == 404
+        json_data = response.json
+        assert json_data["message"] == "Restaurant not found"
+
+
+    def test_post_tables_ok(self, client, db):
+        """
+        Test create a new table
+        """
+        restaurant = Utils.create_restaurant()
+
+        body = Utils.json_table()
+        response = client.post("/restaurants/"+ str(restaurant.id)+ "/tables", json=body, follow_redirects=True)
+        assert response.status_code == 200
+        assert response.json["result"] == "Table added to restaurant"
+
+        Utils.delete_table_restaurant(restaurant.id)
+        Utils.delete_restaurant(restaurant.id)
+
+    def test_post_table_restaurant_not_found(self, client, db):
+        """
+        Test create a new table of a not existing restaurant
+        """
+        restaurant_id = 100
+
+        body = Utils.json_table()
+        response = client.post("/restaurants/"+ str(restaurant_id)+ "/tables", json=body, follow_redirects=True)
+        assert response.status_code == 404
+        json_data = response.json
+        assert json_data["message"] == "Restaurant not found"
+
+
+    def test_delete_tables_ok(self, client, db):
+        """
+        Test delete a table
+        """
+        restaurant = Utils.create_restaurant()
+        table = Utils.create_table(restaurant.id)
+        
+        response = client.delete("/restaurant/table/"+str(table.id), follow_redirects=True)
+        
+        assert response.status_code == 200
+        assert response.json["result"] == "OK"
+        assert Utils.get_table(table.id) is None
+
+        Utils.delete_restaurant(restaurant.id)
+
+
+    def test_get_openings_ok_noresults(self, client, db):
+        """
+        Test search opening hours of a restaurant, no results
+        """
+        restaurant = Utils.create_restaurant()
+        
+        response = client.get("/restaurants/"+ str(restaurant.id)+"/openings", follow_redirects=True)
+        assert response.status_code == 200
+        json_data = response.json
+        assert len(json_data["openings"]) == 0
+
+        Utils.delete_restaurant(restaurant.id)
+
+    def test_get_openings_ok(self, client, db):
+        """
+        Test search opening hours of a restaurant
+        """
+        restaurant = Utils.create_restaurant()
+        opening1 = Utils.create_openings(restaurant.id, 2)
+        opening2 = Utils.create_openings(restaurant.id, 4)
+
+        response = client.get("/restaurants/"+ str(restaurant.id)+"/openings", follow_redirects=True)
+        assert response.status_code == 200
+        json_data = response.json
+        assert len(json_data["openings"]) == 2
+
+        Utils.delete_openings(opening1)
+        Utils.delete_openings(opening2)
+        Utils.delete_restaurant(restaurant.id)
+
+    def test_get_openings_restaurant_not_found(self, client, db):
+        """
+        Test search openings of a restaurant that doesn't exist
+        """
+        restaurant_id = 100
+
+        response = client.get("/restaurants/"+ str(restaurant_id)+"/openings", follow_redirects=True)
+        assert response.status_code == 404
+        json_data = response.json
+        assert json_data["message"] == "Restaurant not found"
+
+
+
+
+
+
+
+    
+    def test_get_menu_ok_noresults(self, client, db):
+        """
+        Test search menus of a restaurant, no results
+        """
+        restaurant = Utils.create_restaurant()
+        
+        response = client.get("/restaurants/"+ str(restaurant.id)+"/menu", follow_redirects=True)
+        assert response.status_code == 200
+        json_data = response.json
+        assert len(json_data["menus"]) == 0
+
+        Utils.delete_restaurant(restaurant.id)
+
+    def test_get_menu_ok(self, client, db):
+        """
+        Test search menu of a restaurant
+        """
+        restaurant = Utils.create_restaurant()
+        menu1 = Utils.create_menu(restaurant.id, "Italian food")
+        menu2 = Utils.create_menu(restaurant.id, "Chinese food")
+
+        response = client.get("/restaurants/"+ str(restaurant.id)+"/menu", follow_redirects=True)
+        assert response.status_code == 200
+        json_data = response.json
+        assert len(json_data["menus"]) == 2
+
+        Utils.delete_menu(menu1.id)
+        Utils.delete_menu(menu2.id)
+        Utils.delete_restaurant(restaurant.id)
+
+    def test_get_menu_restaurant_not_found(self, client, db):
+        """
+        Test search menu of a restaurant that doesn't exist
+        """
+        restaurant_id = 100
+
+        response = client.get("/restaurants/"+ str(restaurant_id)+"/menu", follow_redirects=True)
+        assert response.status_code == 404
+        json_data = response.json
+        assert json_data["message"] == "Restaurant not found"
+
+
+    def test_post_menu_photo_ok(self, client, db):
+        """
+        Test create a new menu
+        """
+        restaurant = Utils.create_restaurant()
+        menu = Utils.create_menu(restaurant.id, "Italian food")
+
+        body = Utils.json_photo()
+        response = client.post("/restaurants/menu/"+ str(menu.id), json=body, follow_redirects=True)
+        assert response.status_code == 200
+        assert response.json["result"] == "Photo of the menu added"
+
+        Utils.delete_menu_photo_by_menu(menu.id)
+        Utils.delete_menu(menu.id)
+        Utils.delete_restaurant(restaurant.id)
+
+    def test_post_table_restaurant_not_found(self, client, db):
+        """
+        Test create a new table of a not existing restaurant
+        """
+        restaurant_id = 100
+
+        body = Utils.json_table()
+        response = client.post("/restaurants/"+ str(restaurant_id)+ "/tables", json=body, follow_redirects=True)
+        assert response.status_code == 404
+        json_data = response.json
+        assert json_data["message"] == "Restaurant not found"

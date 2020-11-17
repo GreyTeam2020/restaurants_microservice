@@ -115,7 +115,7 @@ def get_openings(restaurant_id):
         return error_message("404", "Restaurant not found"), 404
 
     openings = RestaurantService.get_openings(restaurant_id)
-    return list_obj_json("opening hours", openings)
+    return list_obj_json("openings", openings)
 
 
 def get_tables(restaurant_id):
