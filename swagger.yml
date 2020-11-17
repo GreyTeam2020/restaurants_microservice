@@ -24,6 +24,26 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Restaurant'
+  /restaurants/id/{owner_email}:
+    get:
+      tags:
+      - Restaurants
+      summary: Get the id of a restaurant
+      operationId: app.get_restaurant_id_by_owner_email
+      parameters:
+      - name: owner_email
+        in: path
+        description: Email of the owner of the restaurant
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Return the id of the restaurant 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
   /restaurants/{restaurant_id}:
     get:
       tags:

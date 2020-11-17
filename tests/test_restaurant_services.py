@@ -49,7 +49,7 @@ class TestRestaurantsServices:
             new_restaurant.lat,
             new_restaurant.lon,
         )
-        assert restaurant is True
+        assert restaurant is not None
         Utils.delete_restaurant(new_restaurant.id)
 
     def test_get_restaurant_with_info_not_exists(self):
@@ -65,8 +65,32 @@ class TestRestaurantsServices:
             new_restaurant.lat + 2,
             new_restaurant.lon,
         )
-        assert restaurant is False
+        assert restaurant is None
         Utils.delete_restaurant(new_restaurant.id)
+
+
+    def test_get_restaurant_by_email_exist(self):
+        """
+        test about the services restaurant to test the result of get restaurant
+        using owner email
+        :return:
+        """
+        new_restaurant = Utils.create_restaurant()
+        restaurant_id = RestaurantService.get_restaurants_by_owner_email("john@email.com")
+        assert restaurant_id == new_restaurant.id
+        Utils.delete_restaurant(new_restaurant.id)
+
+    def test_get_restaurant_by_email_not_exists(self):
+        """
+        test about the services restaurant to test the result of get restaurant
+        that doesn't exist using owner email
+        :return:
+        """
+        new_restaurant = Utils.create_restaurant()
+        restaurant_id = RestaurantService.get_restaurants_by_owner_email("test@email.com")
+        assert restaurant_id == -1
+        Utils.delete_restaurant(new_restaurant.id)
+
 
     def test_get_restaurant_keyword_one_result(self):
         """

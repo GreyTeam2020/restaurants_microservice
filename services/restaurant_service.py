@@ -59,12 +59,23 @@ class RestaurantService:
             )
             .first()
         )
-        if restaurant is None:
-            # the restaurant doesn't exist
-            return False
+        return restaurant
+
+    @staticmethod
+    def get_restaurants_by_owner_email(owner_email):
+        """
+        This method returns if a restaurant with name, phone, latitude and longitude
+        specified already exists
+        """
+        db_session = current_app.config["DB_SESSION"]
+        restaurant = db_session.query(Restaurant).filter(
+                Restaurant.owner_email == owner_email
+            ).first()
+        
+        if restaurant is not None:
+            return restaurant.id
         else:
-            # the restaurant already exists
-            return True
+            return -1
 
     @staticmethod
     def get_restaurants_by_keyword_name(name):

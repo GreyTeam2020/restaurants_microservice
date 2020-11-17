@@ -73,6 +73,10 @@ def get_restaurant_name(restaurant_id):
     else:
         return json.loads(json.dumps({"result": restaurant.name}))
 
+def get_restaurant_id_by_owner_email(owner_email):
+
+    restaurant_id = RestaurantService.get_restaurants_by_owner_email(owner_email)
+    return json.loads(json.dumps({"result": restaurant_id}))
 
 def get_restaurants_by_keyword(name):
     restaurants = RestaurantService.get_restaurants_by_keyword_name(name)
@@ -203,7 +207,7 @@ def create_restaurant():
 
     # if the restaurant already exists: error
 
-    if RestaurantService.get_restaurant_with_info(name, phone, lat, lon) is True:
+    if RestaurantService.get_restaurant_with_info(name, phone, lat, lon) is not None:
         return error_message("409", "Restaurant already exists"), 409
 
     rest = RestaurantService.create_restaurant(body, _max_seats)
