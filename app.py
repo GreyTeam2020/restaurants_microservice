@@ -55,10 +55,7 @@ def error_message(code, message):
 
 def get_restaurants():
     restaurants = RestaurantService.get_all_restaurants()
-    if restaurants is None:
-        return error_message("404", "Restaurants not found"), 404
-    else:
-        return list_obj_json("restaurants", restaurants)
+    return list_obj_json("restaurants", restaurants)
 
 
 def get_restaurant(restaurant_id):
@@ -79,10 +76,7 @@ def get_restaurant_name(restaurant_id):
 
 def get_restaurants_by_keyword(name):
     restaurants = RestaurantService.get_restaurants_by_keyword_name(name)
-    if restaurants is None:
-        return error_message("404", "Restaurants not found"), 404
-    else:
-        return list_obj_json("restaurants", restaurants)
+    return list_obj_json("restaurants", restaurants)
 
 
 def get_menus(restaurant_id):
@@ -91,22 +85,19 @@ def get_menus(restaurant_id):
         return error_message("404", "Restaurant not found"), 404
 
     menus = RestaurantService.get_menus(restaurant_id)
-    if len(menus) == 0:
-        return error_message("404", "Menus not found"), 404
-    else:
+    
+    all_menus = []
+    # get menu photos for each menu
+    for menu in menus:
+        photos = RestaurantService.get_menu_photos(menu.id)
+        json_menu = serialize(menu)
+        photos_list = []
+        for photo in photos:
+            photos_list.append(serialize(photo))
+        json_menu["photos"] = photos_list
+        all_menus.append(json_menu)
 
-        all_menus = []
-        # get menu photos for each menu
-        for menu in menus:
-            photos = RestaurantService.get_menu_photos(menu.id)
-            json_menu = serialize(menu)
-            photos_list = []
-            for photo in photos:
-                photos_list.append(serialize(photo))
-            json_menu["photos"] = photos_list
-            all_menus.append(json_menu)
-
-        return json.loads(json.dumps({"menus": all_menus}))
+    return json.loads(json.dumps({"menus": all_menus}))
 
 
 def get_dishes(restaurant_id):
@@ -115,10 +106,7 @@ def get_dishes(restaurant_id):
         return error_message("404", "Restaurant not found"), 404
 
     dishes = RestaurantService.get_dishes(restaurant_id)
-    if len(dishes) == 0:
-        return error_message("404", "Dishes not found"), 404
-    else:
-        return list_obj_json("dishes", dishes)
+    return list_obj_json("dishes", dishes)
 
 
 def get_openings(restaurant_id):
@@ -127,10 +115,7 @@ def get_openings(restaurant_id):
         return error_message("404", "Restaurant not found"), 404
 
     openings = RestaurantService.get_openings(restaurant_id)
-    if len(openings) == 0:
-        return error_message("404", "Opening hours not found"), 404
-    else:
-        return list_obj_json("opening hours", openings)
+    return list_obj_json("opening hours", openings)
 
 
 def get_tables(restaurant_id):
@@ -139,10 +124,7 @@ def get_tables(restaurant_id):
         return error_message("404", "Restaurant not found"), 404
 
     tables = RestaurantService.get_tables(restaurant_id)
-    if len(tables) == 0:
-        return error_message("404", "Tables not found"), 404
-    else:
-        return list_obj_json("Tables", tables)
+    return list_obj_json("Tables", tables)
 
 
 def get_photos(restaurant_id):
@@ -151,10 +133,7 @@ def get_photos(restaurant_id):
         return error_message("404", "Restaurant not found"), 404
 
     photos = RestaurantService.get_photos(restaurant_id)
-    if len(photos) == 0:
-        return error_message("404", "Photos not found"), 404
-    else:
-        return list_obj_json("Photos", photos)
+    return list_obj_json("Photos", photos)
 
 
 def get_reviews(restaurant_id):
@@ -163,11 +142,7 @@ def get_reviews(restaurant_id):
         return error_message("404", "Restaurant not found"), 404
 
     reviews = RestaurantService.get_reviews(restaurant_id)
-
-    if len(reviews) == 0:
-        return error_message("404", "Reviews not found"), 404
-    else:
-        return list_obj_json("Reviews", reviews)
+    return list_obj_json("Reviews", reviews)
 
 
 def get_random_reviews(restaurant_id, number):
@@ -176,10 +151,7 @@ def get_random_reviews(restaurant_id, number):
         return error_message("404", "Restaurant not found"), 404
 
     reviews = RestaurantService.get_reviews_random(restaurant_id, number)
-    if len(reviews) == 0:
-        return error_message("404", "Reviews not found"), 404
-    else:
-        return list_obj_json("Reviews", reviews)
+    return list_obj_json("Reviews", reviews)
 
 
 def get_restaurant_more_info(restaurant_id):
