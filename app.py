@@ -73,6 +73,10 @@ def get_restaurant_name(restaurant_id):
     else:
         return json.loads(json.dumps({"result": restaurant.name}))
 
+def get_restaurant_id_by_owner_email(owner_email):
+
+    restaurant_id = RestaurantService.get_restaurants_by_owner_email(owner_email)
+    return json.loads(json.dumps({"result": restaurant_id}))
 
 def get_restaurants_by_keyword(name):
     restaurants = RestaurantService.get_restaurants_by_keyword_name(name)
@@ -85,7 +89,7 @@ def get_menus(restaurant_id):
         return error_message("404", "Restaurant not found"), 404
 
     menus = RestaurantService.get_menus(restaurant_id)
-    
+
     all_menus = []
     # get menu photos for each menu
     for menu in menus:
@@ -115,7 +119,7 @@ def get_openings(restaurant_id):
         return error_message("404", "Restaurant not found"), 404
 
     openings = RestaurantService.get_openings(restaurant_id)
-    return list_obj_json("opening hours", openings)
+    return list_obj_json("openings", openings)
 
 
 def get_tables(restaurant_id):
@@ -124,7 +128,7 @@ def get_tables(restaurant_id):
         return error_message("404", "Restaurant not found"), 404
 
     tables = RestaurantService.get_tables(restaurant_id)
-    return list_obj_json("Tables", tables)
+    return list_obj_json("tables", tables)
 
 
 def get_photos(restaurant_id):
@@ -133,7 +137,7 @@ def get_photos(restaurant_id):
         return error_message("404", "Restaurant not found"), 404
 
     photos = RestaurantService.get_photos(restaurant_id)
-    return list_obj_json("Photos", photos)
+    return list_obj_json("photos", photos)
 
 
 def get_reviews(restaurant_id):
@@ -203,7 +207,7 @@ def create_restaurant():
 
     # if the restaurant already exists: error
 
-    if RestaurantService.get_restaurant_with_info(name, phone, lat, lon) is True:
+    if RestaurantService.get_restaurant_with_info(name, phone, lat, lon) is not None:
         return error_message("409", "Restaurant already exists"), 409
 
     rest = RestaurantService.create_restaurant(body, _max_seats)
@@ -306,7 +310,7 @@ def update_restaurant_info():
     data = request.get_json()
     result = RestaurantService.update_restaurant_info(data)
 
-    if result:
+    if result is False:
         return error_message("500", "Restaurant data has not been modified."), 500
     else:
         return _get_response("Restaurant data has been modified.", 200)

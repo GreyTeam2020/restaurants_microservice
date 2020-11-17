@@ -398,15 +398,14 @@ class Utils:
         This method creates a JSON object to update a restaurant
         """
         return {
-            "restaurant": {
-                "id": restaurant_id,
-                "avg_time": 50,
-                "covid_measures": "Distance between tables",
-                "lat": 43.7118,
-                "lon": 10.4147,
-                "name": "Bobby's",
-                "owner_email": "bobby.sing@email.it",
-                "phone": 10528958,
-                "rating": 0,
-            }
+            "id": restaurant_id,
+            "avg_time": 50,
+            "covid_measures": "Distance between tables",
+            "lat": 43.7118,
+            "lon": 10.4147,
+            "name": "Bobby's",
+            "owner_email": "bobby.sing@email.it",
+            "phone": 10528958,
+            "rating": 0,
+            
         }

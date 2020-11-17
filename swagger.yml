@@ -24,6 +24,26 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Restaurant'
+  /restaurants/id/{owner_email}:
+    get:
+      tags:
+      - Restaurants
+      summary: Get the id of a restaurant
+      operationId: app.get_restaurant_id_by_owner_email
+      parameters:
+      - name: owner_email
+        in: path
+        description: Email of the owner of the restaurant
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Return the id of the restaurant 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
   /restaurants/{restaurant_id}:
     get:
       tags:
@@ -156,7 +176,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  Menus:
+                  menus:
                     type: array
                     items:
                       $ref: '#/components/schemas/Menus'
@@ -189,6 +209,11 @@ paths:
       responses:
         200:
           description: "Photo added"
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Result'
         404:
           description: Error restaurant not found
           content:
@@ -223,7 +248,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  Dishes:
+                  dishes:
                     type: array
                     items:
                       $ref: '#/components/schemas/Dishes'
@@ -255,6 +280,11 @@ paths:
       responses:
         200:
           description: "Dish added"
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Result'
         404:
           description: Error restaurant not found
           content:
@@ -283,7 +313,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  Openings:
+                  openings:
                     type: array
                     items:
                       $ref: '#/components/schemas/Openings'
@@ -315,7 +345,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  Tables:
+                  tables:
                     type: array
                     items:
                       $ref: '#/components/schemas/Tables'
@@ -347,6 +377,11 @@ paths:
       responses:
         200:
           description: "Table added to restaurant"
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Result'
         404:
           description: Generic error
           content:
@@ -375,7 +410,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  Photos:
+                  photos:
                     type: array
                     items:
                       $ref: '#/components/schemas/Photos'
@@ -407,6 +442,11 @@ paths:
       responses:
         200:
           description: "Photo added"
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Result'
         404:
           description: Error restaurant not found
           content:
@@ -473,6 +513,11 @@ paths:
       responses:
         200:
           description: "Review added"
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Result'
         404:
           description: Error restaurant not found
           content:
@@ -598,7 +643,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Restaurant"
+              $ref: "#/components/schemas/RestaurantId"
       responses:
         200:
           description: "Restaurant is been updated"
@@ -785,6 +830,136 @@ components:
           type: string
           description: Restaurant owner's email
           example: "mario.rossi@mail.it"
+    RestaurantModel:
+      required:
+        - restaurant
+        - restaurant_tables
+        - menu
+        - opening
+      type: object
+      properties:
+        restaurant:
+          $ref: '#/components/schemas/Restaurant'
+        restaurant_tables:
+          type: integer
+          description: number of table for 6 people
+          example: 10
+        menu:
+          type: array
+          items:
+            type: string
+            maxLength: 100
+            minLength: 1
+            description: Cuisine type
+            example: 'Italian food'
+        opening:
+          type: array
+          items:
+            $ref: '#/components/schemas/OpeningsInsert'
+    OpeningsInsert:
+        required:
+          - week_day
+          - open_lunch
+          - close_lunch
+          - open_dinner
+          - close_dinner
+        type: object
+        properties:
+          week_day:
+            type: integer
+            minimum: 0
+            maximum: 6
+            description: Day of week
+            example: 3
+          open_lunch:
+            type: string
+            format: date-time
+            description: Time when the restaurant opens for lunch
+            example: "11:30"
+          close_lunch:
+            type: string
+            format: date-time
+            description: Time when the restaurant closes for lunch
+            example: "15:30"
+          open_dinner:
+            type: string
+            format: date-time
+            description: Time when the restaurant opens for dinner
+            example: "19:00"
+          close_dinner:
+            type: string
+            format: date-time
+            description: Time when the restaurant closes for dinner
+            example: "22:00"
+    TableCreation:
+        required:
+          - max_seats
+          - name
+        type: object
+        properties:
+          max_seats:
+            type: integer
+            minimum: 0
+            description: Max number of people at the table
+            example: 3
+          name:
+            type: string
+            maxLength: 100
+            description: name of the table
+            example: 'Red table'
+    DishCreation:
+        required:
+          - name
+          - price
+        type: object
+        properties:
+          name:
+            type: string
+            maxLength: 100
+            description: name of the dish
+            example: 'Pizza margherita'
+          price:
+            type: number
+            minimum: 0
+            description: price of the dish
+            example: 10.50
+    PhotoCreation:
+        required:
+          - caption
+          - url
+        type: object
+        properties:
+          caption:
+            type: string
+            maxLength: 200
+            minLength: 0
+            description: brief description of the photo
+            example: 'Photo 1'
+          url:
+            type: string
+            minLength: 0
+            maxLength: 255
+            description: url of the photo
+            example: "http://photo1.safe"
+    ReviewCreation:
+        required:
+          - stars
+          - review
+          - reviewer_email
+        type: object
+        properties:
+          stars:
+            type: number
+            description: Review of the restaurant
+            example: 3.5
+          review:
+            type: string
+            description: Review of the restaurant
+            example: "Nice place!"
+          reviewer_email:
+            type: string
+            description: Email of user who leave the review
+            example: "nick.miller@email.com"
     Menus:
       required:
       - description
@@ -1008,136 +1183,6 @@ components:
           type: integer
           description: restaurant id
           example: 2
-    RestaurantModel:
-      required:
-      - restaurant
-      - restaurant_tables
-      - menu
-      - opening
-      type: object
-      properties:
-        restaurant:
-          $ref: '#/components/schemas/Restaurant'
-        restaurant_tables:
-          type: integer
-          description: number of table for 6 people
-          example: 10
-        menu:
-          type: array
-          items:
-            type: string
-            maxLength: 100
-            minLength: 1
-            description: Cuisine type
-            example: 'Italian food'
-        opening:
-          type: array
-          items:
-            $ref: '#/components/schemas/OpeningsInsert'
-    OpeningsInsert:
-      required:
-      - week_day
-      - open_lunch
-      - close_lunch
-      - open_dinner
-      - close_dinner
-      type: object
-      properties:
-        week_day:
-          type: integer
-          minimum: 0
-          maximum: 6
-          description: Day of week
-          example: 3
-        open_lunch:
-          type: string
-          format: date-time
-          description: Time when the restaurant opens for lunch
-          example: "11:30"
-        close_lunch:
-          type: string
-          format: date-time
-          description: Time when the restaurant closes for lunch
-          example: "15:30"
-        open_dinner:
-          type: string
-          format: date-time
-          description: Time when the restaurant opens for dinner
-          example: "19:00"
-        close_dinner:
-          type: string
-          format: date-time
-          description: Time when the restaurant closes for dinner
-          example: "22:00"
-    TableCreation:
-      required:
-      - max_seats
-      - name
-      type: object
-      properties:
-        max_seats:
-          type: integer
-          minimum: 0
-          description: Max number of people at the table
-          example: 3
-        name:
-          type: string
-          maxLength: 100
-          description: name of the table
-          example: 'Red table'
-    DishCreation:
-      required:
-      - name
-      - price
-      type: object
-      properties:
-        name:
-          type: string
-          maxLength: 100
-          description: name of the dish
-          example: 'Pizza margherita'
-        price:
-          type: number
-          minimum: 0
-          description: price of the dish
-          example: 10.50
-    PhotoCreation:
-      required:
-      - caption
-      - url
-      type: object
-      properties:
-        caption:
-          type: string
-          maxLength: 200
-          minLength: 0
-          description: brief description of the photo
-          example: 'Photo 1'
-        url:
-          type: string
-          minLength: 0
-          maxLength: 255
-          description: url of the photo
-          example: "http://photo1.safe"
-    ReviewCreation: 
-      required:
-      - stars
-      - review
-      - reviewer_email
-      type: object
-      properties:
-        stars:
-          type: number
-          description: Review of the restaurant
-          example: 3.5
-        review:
-          type: string
-          description: Review of the restaurant
-          example: "Nice place!"
-        reviewer_email:
-          type: string
-          description: Email of user who leave the review
-          example: "nick.miller@email.com"
     Info: 
       required:
       - Restaurant
