@@ -189,6 +189,11 @@ paths:
       responses:
         200:
           description: "Photo added"
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Result'
         404:
           description: Error restaurant not found
           content:
@@ -255,6 +260,11 @@ paths:
       responses:
         200:
           description: "Dish added"
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Result'
         404:
           description: Error restaurant not found
           content:
@@ -315,7 +325,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  Tables:
+                  tables:
                     type: array
                     items:
                       $ref: '#/components/schemas/Tables'
@@ -347,6 +357,11 @@ paths:
       responses:
         200:
           description: "Table added to restaurant"
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Result'
         404:
           description: Generic error
           content:
@@ -375,7 +390,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  Photos:
+                  photos:
                     type: array
                     items:
                       $ref: '#/components/schemas/Photos'
@@ -407,6 +422,11 @@ paths:
       responses:
         200:
           description: "Photo added"
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Result'
         404:
           description: Error restaurant not found
           content:
@@ -473,6 +493,11 @@ paths:
       responses:
         200:
           description: "Review added"
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Result'
         404:
           description: Error restaurant not found
           content:

@@ -322,7 +322,7 @@ class TestComponents:
         )
         assert response.status_code == 200
         json_data = response.json
-        assert len(json_data["Tables"]) == 0
+        assert len(json_data["tables"]) == 0
 
         Utils.delete_restaurant(restaurant.id)
 
@@ -338,7 +338,7 @@ class TestComponents:
         )
         assert response.status_code == 200
         json_data = response.json
-        assert len(json_data["Tables"]) == 1
+        assert len(json_data["tables"]) == 1
 
         Utils.delete_table(table.id)
         Utils.delete_restaurant(restaurant.id)

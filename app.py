@@ -124,7 +124,7 @@ def get_tables(restaurant_id):
         return error_message("404", "Restaurant not found"), 404
 
     tables = RestaurantService.get_tables(restaurant_id)
-    return list_obj_json("Tables", tables)
+    return list_obj_json("tables", tables)
 
 
 def get_photos(restaurant_id):
@@ -133,7 +133,7 @@ def get_photos(restaurant_id):
         return error_message("404", "Restaurant not found"), 404
 
     photos = RestaurantService.get_photos(restaurant_id)
-    return list_obj_json("Photos", photos)
+    return list_obj_json("photos", photos)
 
 
 def get_reviews(restaurant_id):
