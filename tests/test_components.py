@@ -214,11 +214,6 @@ class TestComponents:
         assert json_data['owner_email'] == "nick.miller@email.com" + changed
         '''
 
-    """
-    Mariagiovanna: Dishes, Tables, Menu, Opening Hours 
-
-    Renato: Restaurants, Photos, Reviews
-    """
 
     def test_get_dishes_ok_noresults(self, client, db):
         """
