@@ -306,7 +306,7 @@ def update_restaurant_info():
     data = request.get_json()
     result = RestaurantService.update_restaurant_info(data)
 
-    if result:
+    if result is False:
         return error_message("500", "Restaurant data has not been modified."), 500
     else:
         return _get_response("Restaurant data has been modified.", 200)
