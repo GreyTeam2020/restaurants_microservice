@@ -623,7 +623,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Restaurant"
+              $ref: "#/components/schemas/RestaurantPut"
       responses:
         200:
           description: "Restaurant is been updated"
@@ -1191,3 +1191,57 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Openings'
+    RestaurantPut:
+      required:
+      - id
+      - name
+      - lat
+      - lon
+      - phone
+      - covid_measures
+      - avg_time
+      - rating
+      - owner_email
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier
+          example: 123
+        name:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Restaurant's name
+          example: "My Pizza Restaurant"
+        lat:
+          type: number
+          description: Restaurant Latitude
+          example: 42.42
+        lon:
+          type: number
+          description: Restaurant Longitude
+          example: 42.42
+        phone:
+          type: integer
+          minLength: 5
+          maxLength: 50
+          description: Restaurant Phone Number
+          example: 050123456
+        covid_measures:
+          type: string
+          maxLength: 500
+          description: Covid measures adopted in restaurant
+          example: "Distance between tables"
+        avg_time:
+          type: integer
+          description: Restaurant avg time
+          example: 42
+        rating:
+          type: number
+          description: Restaurant Rating
+          example: 0
+        owner_email:
+          type: string
+          description: Restaurant owner's email
+          example: "mario.rossi@mail.it"

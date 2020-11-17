@@ -369,15 +369,15 @@ class RestaurantService:
 
         # put in model from json for better validation, debug, test
         update_restaurant = Restaurant()
-        update_restaurant.name = data["restaurant"]["name"]
-        update_restaurant.lat = data["restaurant"]["lat"]
-        update_restaurant.lon = data["restaurant"]["lon"]
-        update_restaurant.phone = data["restaurant"]["phone"]
-        update_restaurant.covid_measures = data["restaurant"]["covid_measures"]
-        update_restaurant.avg_time = data["restaurant"]["avg_time"]
-        update_restaurant.rating = data["restaurant"]["rating"]
-        update_restaurant.owner_email = data["restaurant"]["owner_email"]
-        update_restaurant.id = data["restaurant"]["id"]
+        update_restaurant.name = data["name"]
+        update_restaurant.lat = data["lat"]
+        update_restaurant.lon = data["lon"]
+        update_restaurant.phone = data["phone"]
+        update_restaurant.covid_measures = data["covid_measures"]
+        update_restaurant.avg_time = data["avg_time"]
+        update_restaurant.rating = data["rating"]
+        update_restaurant.owner_email = data["owner_email"]
+        update_restaurant.id = data["id"]
 
         db_session = current_app.config["DB_SESSION"]
         q = (
