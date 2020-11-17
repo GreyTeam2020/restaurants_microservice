@@ -237,13 +237,17 @@ class RestaurantService:
         """
         This method creates a new restaurant
         """
-
+        rest = data["restaurant"]
+        rest_name = rest["name"]
+        lat = rest["lat"]
+        lon = rest["lon"]
+        rest_phone = rest["phone"]
         # add in restaurant table
         new_restaurant = Restaurant()
-        new_restaurant.name = data["restaurant"]["name"]
-        new_restaurant.lat = data["restaurant"]["lat"]
-        new_restaurant.lon = data["restaurant"]["lon"]
-        new_restaurant.phone = data["restaurant"]["phone"]
+        new_restaurant.name = rest_name
+        new_restaurant.lat = lat
+        new_restaurant.lon = lon
+        new_restaurant.phone = rest_phone
         new_restaurant.covid_measures = data["restaurant"]["covid_measures"]
         new_restaurant.avg_time = data["restaurant"]["avg_time"]
         new_restaurant.rating = data["restaurant"]["rating"]
@@ -292,7 +296,7 @@ class RestaurantService:
 
             db_session.add(new_menu)
             db_session.commit()
-        return True
+        return db_session.query(Restaurant).filter_by(name=rest_name, lat=lat, lon=lon, phone=rest_phone).first()
 
     @staticmethod
     def create_table(name, max_seats, restaurant_id):

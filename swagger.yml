@@ -543,7 +543,6 @@ paths:
             application/json:
               schema:
                   $ref: '#/components/schemas/Error'
-
   /restaurants/calculate_rating_for_all_restaurant:
       get:
         tags:
@@ -563,7 +562,6 @@ paths:
               application/json:
                 schema:
                     $ref: '#/components/schemas/Error'
-
   /restaurants/create:
     post:
       tags:
@@ -575,17 +573,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/RestaurantId"
+              $ref: "#/components/schemas/RestaurantModel"
       responses:
         200:
           description: "Restaurant is been created"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RestaurantId"
         409:
           description: Generic error
           content:
             application/json:
               schema:
                   $ref: '#/components/schemas/Error'
-
   /restaurants/update:
     put:
       tags:
@@ -607,7 +608,6 @@ paths:
             application/json:
               schema:
                   $ref: '#/components/schemas/Error'
-
   /restaurant/menu/{dish_id}:
     delete:
       tags:
@@ -693,6 +693,56 @@ components:
       - owner_email
       type: object
       properties:
+        name:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Restaurant's name
+          example: "My Pizza Restaurant"
+        lat:
+          type: number
+          description: Restaurant Latitude
+          example: 42.42
+        lon:
+          type: number
+          description: Restaurant Longitude
+          example: 42.42
+        phone:
+          type: integer
+          minLength: 5
+          maxLength: 50
+          description: Restaurant Phone Number
+          example: 050123456
+        covid_measures:
+          type: string
+          maxLength: 500
+          description: Covid measures adopted in restaurant
+          example: "Distance between tables"
+        avg_time:
+          type: integer
+          description: Restaurant avg time
+          example: 42
+        rating:
+          type: number
+          description: Restaurant Rating
+          example: 0
+        owner_email:
+          type: string
+          description: Restaurant owner's email
+          example: "mario.rossi@mail.it"
+    RestaurantId:
+      required:
+        - id
+        - name
+        - lat
+        - lon
+        - phone
+        - covid_measures
+        - avg_time
+        - rating
+        - owner_email
+      type: object
+      properties:
         id:
           type: integer
           description: Unique identifier
@@ -735,7 +785,7 @@ components:
           type: string
           description: Restaurant owner's email
           example: "mario.rossi@mail.it"
-    Menus: 
+    Menus:
       required:
       - description
       - cuisine
@@ -958,7 +1008,7 @@ components:
           type: integer
           description: restaurant id
           example: 2
-    RestaurantId:
+    RestaurantModel:
       required:
       - restaurant
       - restaurant_tables

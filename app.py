@@ -206,10 +206,10 @@ def create_restaurant():
     if RestaurantService.get_restaurant_with_info(name, phone, lat, lon) is True:
         return error_message("409", "Restaurant already exists"), 409
 
-    # add restaurant
-    RestaurantService.create_restaurant(body, _max_seats)
-    # return response
-    return _get_response("Restaurant is been created", 200)
+    rest = RestaurantService.create_restaurant(body, _max_seats)
+    if rest is None:
+        return _get_response("An error occur during the restaurants creation", 500)
+    return _get_response(serialize(rest), 200)
 
 
 def create_table(restaurant_id):
