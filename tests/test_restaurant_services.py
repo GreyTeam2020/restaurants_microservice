@@ -76,8 +76,8 @@ class TestRestaurantsServices:
         :return:
         """
         new_restaurant = Utils.create_restaurant()
-        restaurant_id = RestaurantService.get_restaurants_by_owner_email("john@email.com")
-        assert restaurant_id == new_restaurant.id
+        restaurant = RestaurantService.get_restaurants_by_owner_email("john@email.com")
+        assert restaurant == new_restaurant
         Utils.delete_restaurant(new_restaurant.id)
 
     def test_get_restaurant_by_email_not_exists(self):
@@ -87,8 +87,8 @@ class TestRestaurantsServices:
         :return:
         """
         new_restaurant = Utils.create_restaurant()
-        restaurant_id = RestaurantService.get_restaurants_by_owner_email("test@email.com")
-        assert restaurant_id == -1
+        restaurant = RestaurantService.get_restaurants_by_owner_email("test@email.com")
+        assert restaurant is None
         Utils.delete_restaurant(new_restaurant.id)
 
 
