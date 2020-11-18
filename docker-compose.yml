@@ -8,3 +8,18 @@ services:
             - "5003:5003"
         expose:
             - "5003"
+        volumes:
+            - .:/code/
+    celery:
+        depends_on:
+            - redis
+        build: .
+        restart: always
+        command: celery -A background.celery_app worker --loglevel=DEBUG -B
+        links:
+            - redis
+        volumes:
+            - .:/code/
+    redis:
+        image: "redis:alpine"
+        container_name: rd01
