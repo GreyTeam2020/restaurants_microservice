@@ -336,6 +336,16 @@ def delete_table(table_id):
     return _get_response("OK", 200)
 
 
+def delete_restaurant(restaurant_id):
+    if restaurant_id is None:
+        return error_message("400", "restaurant_id not specified"), 400
+    restaurant = RestaurantService.get_restaurant(restaurant_id)
+    if restaurant is None:
+        return error_message("404", "Restaurant not found"), 404
+    RestaurantService.delete_restaurant(restaurant_id)
+    return _get_response("OK", 200)
+
+
 # --------- END API definition --------------------------
 logging.basicConfig(level=logging.INFO)
 

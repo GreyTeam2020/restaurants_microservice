@@ -77,6 +77,38 @@ paths:
             application/json:
               schema:
                   $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+        - Restaurants
+      summary: Delete a restaurant with all its info
+      operationId: app.delete_restaurant
+      parameters:
+      - name: restaurant_id
+        in: path
+        description: Restaurant's Unique identifier
+        required: true
+        schema:
+          pattern: ^[a-zA-Z0-9-]+$
+          type: string
+      responses:
+        200:
+          description: "The operation is done"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+        400:
+          description: "The code returned if there is some error on server, e.g: param not specified"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Restaurant not found
+          content: 
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Error'
   /restaurants/{restaurant_id}/name:
     get:
       tags:
