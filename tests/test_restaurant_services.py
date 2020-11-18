@@ -610,7 +610,7 @@ class TestRestaurantsServices:
         response = RestaurantService.create_table(
             body["name"], body["max_seats"], new_restaurant.id
         )
-        assert response is True
+        assert response is not None
 
         Utils.delete_table_restaurant(new_restaurant.id)
         Utils.delete_restaurant(new_restaurant.id)
@@ -626,7 +626,7 @@ class TestRestaurantsServices:
         response = RestaurantService.create_dish(
             body["name"], body["price"], new_restaurant.id
         )
-        assert response is True
+        assert response is not None
 
         Utils.delete_dish_restaurant(new_restaurant.id)
         Utils.delete_restaurant(new_restaurant.id)
@@ -643,7 +643,7 @@ class TestRestaurantsServices:
         response = RestaurantService.create_restaurant_photo(
             body["url"], body["caption"], new_restaurant.id
         )
-        assert response is True
+        assert response is not None
 
         Utils.delete_restaurant_photo(new_restaurant.id)
         Utils.delete_restaurant(new_restaurant.id)
@@ -660,7 +660,7 @@ class TestRestaurantsServices:
         response = RestaurantService.create_review(
             body["review"], body["stars"], body["reviewer_email"], new_restaurant.id
         )
-        assert response is True
+        assert response is not None
 
         Utils.delete_review_restaurant(new_restaurant.id)
         Utils.delete_restaurant(new_restaurant.id)
@@ -677,7 +677,7 @@ class TestRestaurantsServices:
         response = RestaurantService.create_menu_photo(
             body["url"], body["caption"], new_restaurant.id
         )
-        assert response is True
+        assert response is not None
 
         Utils.delete_menu_photo_by_menu(new_restaurant.id)
         Utils.delete_menu(new_menu.id)
