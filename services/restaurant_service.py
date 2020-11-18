@@ -339,9 +339,7 @@ class RestaurantService:
         rating_value = 0.0
         restaurant = db_session.query(Restaurant).filter_by(id=restaurant_id).first()
         if restaurant is None:
-            raise Exception(
-                "Restaurant with id {} don't exist on database".format(restaurant_id)
-            )
+           return -1
         reviews_list = (
             db_session.query(Review).filter_by(restaurant_id=restaurant_id).all()
         )

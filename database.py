@@ -18,7 +18,6 @@ from flask_sqlalchemy import SQLAlchemy
 from decimal import Decimal as D
 import sqlalchemy.types as types
 
-
 db = declarative_base()
 
 
@@ -233,6 +232,69 @@ def init_db(uri):
         second_menu.cusine = "Japanese food"
         second_menu.description = "oriental food"
         db_session.add(second_menu)
+        db_session.commit()
+
+    q = db_session.query(Review).filter(Review.id == 1)
+    review = q.first()
+    if review is None:
+        review = Review()
+        review.stars = 4
+        review.review = "Excellent"
+        review.restaurant_id = 1
+        review.reviewer_email = "user@email.com"
+        db_session.add(review)
+        db_session.commit()
+
+    q = db_session.query(Review).filter(Review.id == 2)
+    review = q.first()
+    if review is None:
+        review = Review()
+        review.stars = 1
+        review.review = "Bad"
+        review.restaurant_id = 1
+        review.reviewer_email = "user2@email.com"
+        db_session.add(review)
+        db_session.commit()
+
+    q = db_session.query(Review).filter(Review.id == 3)
+    review = q.first()
+    if review is None:
+        review = Review()
+        review.stars = 3
+        review.review = "Beautiful"
+        review.restaurant_id = 1
+        review.reviewer_email = "user3@email.com"
+        db_session.add(review)
+        db_session.commit()
+
+    q = db_session.query(PhotoGallery).filter(PhotoGallery.id == 1)
+    review = q.first()
+    if review is None:
+        photo_gallery = PhotoGallery()
+        photo_gallery.url = "http://myrestaurant.com/photo1.jpg"
+        photo_gallery.caption = "Caption 1"
+        photo_gallery.restaurant_id = 1
+        db_session.add(photo_gallery)
+        db_session.commit()
+
+    q = db_session.query(PhotoGallery).filter(PhotoGallery.id == 2)
+    review = q.first()
+    if review is None:
+        photo_gallery = PhotoGallery()
+        photo_gallery.url = "http://myrestaurant.com/photo2.jpg"
+        photo_gallery.caption = "Caption 2"
+        photo_gallery.restaurant_id = 1
+        db_session.add(photo_gallery)
+        db_session.commit()
+
+    q = db_session.query(PhotoGallery).filter(PhotoGallery.id == 3)
+    review = q.first()
+    if review is None:
+        photo_gallery = PhotoGallery()
+        photo_gallery.url = "http://myrestaurant.com/photo3.jpg"
+        photo_gallery.caption = "Caption 3"
+        photo_gallery.restaurant_id = 1
+        db_session.add(photo_gallery)
         db_session.commit()
 
     return db_session
