@@ -243,6 +243,52 @@ class RestaurantService:
         db_session.commit()
         return True
 
+
+    def delete_restaurant(restaurant_id):
+        """
+        This method deletes all data about a restaurant (also in other tables)
+        """
+
+        db_session = current_app.config["DB_SESSION"]
+        restaurant = db_session.query(Restaurant).filter(
+                Restaurant.id == restaurant_id
+            ).first()
+
+        if restaurant is None:
+            return True
+
+        db_session.query(OpeningHours).filter(
+            OpeningHours.restaurant_id == restaurant.id
+        ).delete()
+
+        db_session.query(RestaurantTable).filter(
+            RestaurantTable.restaurant_id == restaurant.id
+        ).delete()
+
+        db_session.query(PhotoGallery).filter(
+            PhotoGallery.restaurant_id == restaurant.id
+        ).delete()
+
+        db_session.query(MenuDish).filter(
+            MenuDish.restaurant_id == restaurant.id
+        ).delete()
+
+        db_session.query(Review).filter(
+            Review.restaurant_id == restaurant.id
+        ).delete()
+
+        menus = db_session.query(Menu).filter(Menu.restaurant_id == restaurant.id).all()
+        for menu in menus:
+            db_session.query(MenuPhotoGallery).filter(
+                MenuPhotoGallery.menu_id == menu.id
+            ).delete()
+
+        db_session.query(Menu).filter(Menu.restaurant_id == restaurant.id).delete()
+        
+        db_session.query(Restaurant).filter(Restaurant.id == restaurant.id).delete()
+        db_session.commit()
+
+
     @staticmethod
     def create_restaurant(data, max_seats):
         """

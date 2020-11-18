@@ -32,7 +32,7 @@ def JSON_serialization(obj_dict):
         if str(type(value)) == "<class 'datetime.time'>":
             obj_dict.update({key: value.strftime("%H:%M")})
         elif str(type(value)) == "<class 'datetime.datetime'>":
-            obj_dict.update({key: value.strftime("%m/%d/%Y, %H:%M:%S")})
+            obj_dict.update({key: value.strftime("YYYY-MM-DDTHH:MM:SSZ")})
         elif str(type(value)) == "<class 'decimal.Decimal'>":
             obj_dict.update({key: float(value)})
     return obj_dict
@@ -249,7 +249,7 @@ def create_photo(restaurant_id):
     body = request.get_json()
 
     photo = RestaurantService.get_photo_with_url(body["url"])
-    if len(photo) is not 0:
+    if len(photo) != 0:
         return error_message("409", "URL already present"), 409
 
     RestaurantService.create_restaurant_photo(
@@ -333,6 +333,16 @@ def delete_table(table_id):
     if table_id is None:
         return error_message("400", "table_id not specified"), 400
     RestaurantService.delete_table(table_id)
+    return _get_response("OK", 200)
+
+
+def delete_restaurant(restaurant_id):
+    if restaurant_id is None:
+        return error_message("400", "restaurant_id not specified"), 400
+    restaurant = RestaurantService.get_restaurant(restaurant_id)
+    if restaurant is None:
+        return error_message("404", "Restaurant not found"), 404
+    RestaurantService.delete_restaurant(restaurant_id)
     return _get_response("OK", 200)
 
 
