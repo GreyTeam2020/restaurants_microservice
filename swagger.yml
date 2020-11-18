@@ -43,7 +43,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Restaurant'
+                $ref: '#/components/schemas/RestaurantId'
         404:
           description: Owner not found
           content: 
