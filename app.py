@@ -71,15 +71,15 @@ def get_restaurant_name(restaurant_id):
     if restaurant is None:
         return error_message("404", "Restaurant not found"), 404
     else:
-        return json.loads(json.dumps({"result": restaurant.name}))
+        return _get_response(restaurant.name, 200)
 
 def get_restaurant_id_by_owner_email(owner_email):
 
-    restaurant_id = RestaurantService.get_restaurants_by_owner_email(owner_email)
-    if restaurant_id == -1:
+    restaurant = RestaurantService.get_restaurants_by_owner_email(owner_email)
+    if restaurant is None:
         return error_message("404", "Owner not found"), 404
     else:
-        return json.loads(json.dumps({"result": restaurant_id}))
+        return serialize(restaurant)
 
 def get_restaurants_by_keyword(name):
     restaurants = RestaurantService.get_restaurants_by_keyword_name(name)
@@ -248,8 +248,8 @@ def create_photo(restaurant_id):
 
     body = request.get_json()
 
-    photo = RestaurantService.get_menu_photo_with_url(body["url"])
-    if photo is not None:
+    photo = RestaurantService.get_photo_with_url(body["url"])
+    if len(photo) is not 0:
         return error_message("409", "URL already present"), 409
 
     RestaurantService.create_restaurant_photo(
@@ -295,7 +295,10 @@ def get_avg_rating_restaurant(restaurant_id):
     if restaurant_id is None:
         return error_message("400", "dish_id not specified"), 400
     rating = RestaurantService.get_avg_rating_restaurant(restaurant_id)
-    return serialize(rating)
+    if rating == -1:
+        return _get_response(rating, 404)
+    else:
+        return _get_response(rating, 200)
 
 
 def calculate_rating_for_all_restaurant():
@@ -303,7 +306,7 @@ def calculate_rating_for_all_restaurant():
     calculate rating for all restaurant(celery)
     """
     done = RestaurantService.calculate_rating_for_all_restaurant()
-    return serialize(done)
+    return _get_response(done, 200)
 
 
 def update_restaurant_info():
