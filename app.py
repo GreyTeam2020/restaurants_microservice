@@ -32,7 +32,7 @@ def JSON_serialization(obj_dict):
         if str(type(value)) == "<class 'datetime.time'>":
             obj_dict.update({key: value.strftime("%H:%M")})
         elif str(type(value)) == "<class 'datetime.datetime'>":
-            obj_dict.update({key: value.strftime("%m/%d/%Y, %H:%M:%S")})
+            obj_dict.update({key: value.strftime("YYYY-MM-DDTHH:MM:SSZ")})
         elif str(type(value)) == "<class 'decimal.Decimal'>":
             obj_dict.update({key: float(value)})
     return obj_dict
