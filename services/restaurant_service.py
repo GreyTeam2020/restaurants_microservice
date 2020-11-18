@@ -211,7 +211,7 @@ class RestaurantService:
     @staticmethod
     def get_reviews_random(restaurant_id, number):
         """
-        This method returns random reviews of the restaurant 
+        This method returns random reviews of the restaurant
         Number of reviews is given by the argument "number"
         """
         db_session = current_app.config["DB_SESSION"]
@@ -373,7 +373,11 @@ class RestaurantService:
         db_session = current_app.config["DB_SESSION"]
         db_session.add(new_table)
         db_session.commit()
-        return db_session.query(RestaurantTable).filter(RestaurantTable.id == new_table.id).first()
+        return (
+            db_session.query(RestaurantTable)
+            .filter(RestaurantTable.id == new_table.id)
+            .first()
+        )
 
     @staticmethod
     def get_avg_rating_restaurant(restaurant_id: int) -> float:
@@ -475,7 +479,6 @@ class RestaurantService:
         db_session.commit()
         return db_session.query(MenuDish).filter(MenuDish.id == new_dish.id).first()
 
-
     @staticmethod
     def create_restaurant_photo(url, caption, restaurant_id):
         """
@@ -489,7 +492,11 @@ class RestaurantService:
         db_session = current_app.config["DB_SESSION"]
         db_session.add(new_photo)
         db_session.commit()
-        return db_session.query(PhotoGallery).filter(PhotoGallery.id == new_photo.id).first()
+        return (
+            db_session.query(PhotoGallery)
+            .filter(PhotoGallery.id == new_photo.id)
+            .first()
+        )
 
     @staticmethod
     def create_review(review, stars, reviewer_email, restaurant_id):
@@ -507,7 +514,6 @@ class RestaurantService:
         db_session.commit()
         return db_session.query(Review).filter(Review.id == new_review.id).first()
 
-
     @staticmethod
     def create_menu_photo(url, caption, menu_id):
         """
@@ -521,5 +527,8 @@ class RestaurantService:
         db_session = current_app.config["DB_SESSION"]
         db_session.add(new_photo)
         db_session.commit()
-        return db_session.query(MenuPhotoGallery).filter(MenuPhotoGallery.id == new_photo.id).first()
-
+        return (
+            db_session.query(MenuPhotoGallery)
+            .filter(MenuPhotoGallery.id == new_photo.id)
+            .first()
+        )

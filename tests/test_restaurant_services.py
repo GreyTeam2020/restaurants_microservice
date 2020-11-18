@@ -214,7 +214,7 @@ class TestRestaurantsServices:
 
     def test_get_menu_photos_not_exist(self):
         """
-        test about the services restaurant to test the result of get photos of a 
+        test about the services restaurant to test the result of get photos of a
         menu without photos
         :return:
         """
@@ -273,7 +273,7 @@ class TestRestaurantsServices:
 
     def test_get_dishes_not_exists(self):
         """
-        test about the services restaurant to test the result of get dishes of 
+        test about the services restaurant to test the result of get dishes of
         a restaurant with no dishes
         :return:
         """
@@ -318,7 +318,7 @@ class TestRestaurantsServices:
 
     def test_get_tables_ok(self):
         """
-        test about the services restaurant to test the result of get tables of a 
+        test about the services restaurant to test the result of get tables of a
         restaurant
         :return:
         """
@@ -335,7 +335,7 @@ class TestRestaurantsServices:
 
     def test_get_tables_not_exists(self):
         """
-        test about the services restaurant to test the result of get tables of a 
+        test about the services restaurant to test the result of get tables of a
         restaurant with no tables
         :return:
         """
@@ -348,7 +348,7 @@ class TestRestaurantsServices:
 
     def test_get_photos_ok(self):
         """
-        test about the services restaurant to test the result of get photos of a 
+        test about the services restaurant to test the result of get photos of a
         restaurant
         :return:
         """
@@ -365,7 +365,7 @@ class TestRestaurantsServices:
 
     def test_get_photos_not_exists(self):
         """
-        test about the services restaurant to test the result of get photos of a 
+        test about the services restaurant to test the result of get photos of a
         restaurant with no photos
         :return:
         """
@@ -378,7 +378,7 @@ class TestRestaurantsServices:
 
     def test_get_photo_with_url_ok(self):
         """
-        test about the services restaurant to test the result of get photo of a 
+        test about the services restaurant to test the result of get photo of a
         restaurant uring its URL
         :return:
         """
@@ -395,7 +395,7 @@ class TestRestaurantsServices:
 
     def test_get_photo_with_url_not_exists(self):
         """
-        test about the services restaurant to test the result of get photo of a 
+        test about the services restaurant to test the result of get photo of a
         restaurant uring a not existing URL
         :return:
         """
@@ -404,7 +404,7 @@ class TestRestaurantsServices:
 
     def test_get_reviews_ok(self):
         """
-        test about the services restaurant to test the result of get reviews of a 
+        test about the services restaurant to test the result of get reviews of a
         restaurant
         :return:
         """
@@ -419,7 +419,7 @@ class TestRestaurantsServices:
 
     def test_get_reviews_not_exists(self):
         """
-        test about the services restaurant to test the result of get reviews of a 
+        test about the services restaurant to test the result of get reviews of a
         restaurant with no reviews
         :return:
         """
@@ -432,7 +432,7 @@ class TestRestaurantsServices:
 
     def test_get_reviews_random_bigger_num_ok(self):
         """
-        test about the services restaurant to test the result of get a number 
+        test about the services restaurant to test the result of get a number
         of random reviews bigger of the number of reviews of the restaurant
         :return:
         """
@@ -447,7 +447,7 @@ class TestRestaurantsServices:
 
     def test_get_reviews_random_smaller_num_ok(self):
         """
-        test about the services restaurant to test the result of get a number 
+        test about the services restaurant to test the result of get a number
         of random reviews smaller of the number of reviews of the restaurant
         :return:
         """
@@ -466,7 +466,7 @@ class TestRestaurantsServices:
 
     def test_get_reviews_random_not_exists(self):
         """
-        test about the services restaurant to test the result of get a number 
+        test about the services restaurant to test the result of get a number
         of random reviews of a restaurant with no reviews
         :return:
         """
@@ -479,7 +479,7 @@ class TestRestaurantsServices:
 
     def test_get_reviews_random_0(self):
         """
-        test about the services restaurant to test the result of get a number 
+        test about the services restaurant to test the result of get a number
         of random reviews of a restaurant testing a limit case (number=0)
         :return:
         """
@@ -494,7 +494,7 @@ class TestRestaurantsServices:
 
     def test_get_reviews_random_negative(self):
         """
-        test about the services restaurant to test the result of get a number 
+        test about the services restaurant to test the result of get a number
         of random reviews of a restaurant usingg an invalid number
         :return:
         """
@@ -532,7 +532,7 @@ class TestRestaurantsServices:
 
     def test_get_dish_not_exists_not_fail(self):
         """
-        test about the services restaurant to test the result of deleting a 
+        test about the services restaurant to test the result of deleting a
         dish that doesn't exist
         :return:
         """
@@ -633,7 +633,7 @@ class TestRestaurantsServices:
 
     def test_create_restaurant_photo_ok(self):
         """
-        test about the services restaurant to test the result of creating a 
+        test about the services restaurant to test the result of creating a
         restaurant photo
         :return:
         """

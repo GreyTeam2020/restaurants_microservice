@@ -661,7 +661,7 @@ class TestComponents:
 
     def test_get_random_reviews_ko_404(self, client, db):
         """
-         Test get random reviews for restaurant not found
+        Test get random reviews for restaurant not found
         """
         response = client.get(
             "/restaurants/" + str(123) + "/reviews/" + str(10), follow_redirects=True
@@ -797,7 +797,7 @@ class TestComponents:
 
     def test_delete_restaurant_all_info_not_found(self, client, db):
         """
-        Test delete a restaurant with all its information for a restaurant that 
+        Test delete a restaurant with all its information for a restaurant that
         doesn't exist
         """
 
