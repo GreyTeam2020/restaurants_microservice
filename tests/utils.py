@@ -249,7 +249,7 @@ class Utils:
         """
         db_session = current_app.config["DB_SESSION"]
         review = db_session.query(Review).filter(review_id == Review.id).first()
-        
+
         return review
 
     def get_menu(menu_id):
@@ -258,7 +258,7 @@ class Utils:
         """
         db_session = current_app.config["DB_SESSION"]
         menu = db_session.query(Menu).filter(menu_id == Menu.id).first()
-        
+
         return menu
 
     def get_opening_by_restaurant(restaurant_id):
@@ -266,8 +266,12 @@ class Utils:
         This method gets openings of a restaurant
         """
         db_session = current_app.config["DB_SESSION"]
-        openings = db_session.query(OpeningHours).filter(restaurant_id == OpeningHours.restaurant_id).all()
-        
+        openings = (
+            db_session.query(OpeningHours)
+            .filter(restaurant_id == OpeningHours.restaurant_id)
+            .all()
+        )
+
         return openings
 
     def get_photo(photo_id):
@@ -275,8 +279,10 @@ class Utils:
         This method gets a photo
         """
         db_session = current_app.config["DB_SESSION"]
-        photo = db_session.query(PhotoGallery).filter(photo_id == PhotoGallery.id).first()
-        
+        photo = (
+            db_session.query(PhotoGallery).filter(photo_id == PhotoGallery.id).first()
+        )
+
         return photo
 
     def get_menu_photo(photo_id):
@@ -284,8 +290,12 @@ class Utils:
         This method gets a menu photo
         """
         db_session = current_app.config["DB_SESSION"]
-        photo = db_session.query(MenuPhotoGallery).filter(photo_id == MenuPhotoGallery.id).first()
-        
+        photo = (
+            db_session.query(MenuPhotoGallery)
+            .filter(photo_id == MenuPhotoGallery.id)
+            .first()
+        )
+
         return photo
 
     def get_restaurant(restaurant_id):
@@ -293,8 +303,10 @@ class Utils:
         This method gets a restaurant
         """
         db_session = current_app.config["DB_SESSION"]
-        restaurant = db_session.query(Restaurant).filter(restaurant_id == Restaurant.id).first()
-        
+        restaurant = (
+            db_session.query(Restaurant).filter(restaurant_id == Restaurant.id).first()
+        )
+
         return restaurant
 
     def delete_creation_restaurant(data):
@@ -461,5 +473,4 @@ class Utils:
             "owner_email": "bobby.sing@email.it",
             "phone": 10528958,
             "rating": 0,
-            
         }

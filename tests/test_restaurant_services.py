@@ -68,7 +68,6 @@ class TestRestaurantsServices:
         assert restaurant is None
         Utils.delete_restaurant(new_restaurant.id)
 
-
     def test_get_restaurant_by_email_exist(self):
         """
         test about the services restaurant to test the result of get restaurant
@@ -90,7 +89,6 @@ class TestRestaurantsServices:
         restaurant = RestaurantService.get_restaurants_by_owner_email("test@email.com")
         assert restaurant is None
         Utils.delete_restaurant(new_restaurant.id)
-
 
     def test_get_restaurant_keyword_one_result(self):
         """
@@ -783,11 +781,6 @@ class TestRestaurantsServices:
 
         Utils.delete_restaurant(new_restaurant.id)
 
-
-
-
-
-
     def test_delete_restaurant_all_info_ok(self):
         """
         test about the services restaurant to test the result of deleting a restaurant
@@ -797,13 +790,14 @@ class TestRestaurantsServices:
         new_restaurant = Utils.create_restaurant()
         new_table = Utils.create_table(new_restaurant.id)
         new_menu = Utils.create_menu(new_restaurant.id, "Italian food")
-        new_menu_photo = Utils.create_menu_photo(new_menu.id, "http://testphotomenu.com")
+        new_menu_photo = Utils.create_menu_photo(
+            new_menu.id, "http://testphotomenu.com"
+        )
         new_opening1 = Utils.create_openings(new_restaurant.id, 2)
         new_opening2 = Utils.create_openings(new_restaurant.id, 3)
         new_review = Utils.create_review(new_restaurant.id, 3)
         new_photo = Utils.create_photo(new_restaurant.id, "http://testphoto.com")
         new_dish = Utils.create_dish(new_restaurant.id, "Pizza")
-
 
         response = RestaurantService.delete_restaurant(new_restaurant.id)
         assert response is True
@@ -816,7 +810,6 @@ class TestRestaurantsServices:
         assert Utils.get_review(new_review.id) is None
         assert Utils.get_photo(new_photo.id) is None
         assert Utils.get_dish(new_dish.id) is None
-
 
     def test_delete_restaurant_all_info_not_found(self):
         """
