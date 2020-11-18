@@ -190,7 +190,7 @@ class TestComponents:
         """
         email = "notexists@noemail.com"
         response = client.get("/restaurants/id/" + email, follow_redirects=True)
-        assert response.status_code == 200
+        assert response.status_code == 404
 
     def test_put_restaurant_update_ok_200(self, client, db):
         """
