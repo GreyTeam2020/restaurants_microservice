@@ -73,9 +73,9 @@ class RestaurantService:
             ).first()
         
         if restaurant is not None:
-            return restaurant.id
+            return restaurant
         else:
-            return -1
+            return None
 
     @staticmethod
     def get_restaurants_by_keyword_name(name):
