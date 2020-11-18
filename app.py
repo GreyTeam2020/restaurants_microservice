@@ -73,6 +73,7 @@ def get_restaurant_name(restaurant_id):
     else:
         return _get_response(restaurant.name, 200)
 
+
 def get_restaurant_id_by_owner_email(owner_email):
 
     restaurant = RestaurantService.get_restaurants_by_owner_email(owner_email)
@@ -80,6 +81,7 @@ def get_restaurant_id_by_owner_email(owner_email):
         return error_message("404", "Owner not found"), 404
     else:
         return serialize(restaurant)
+
 
 def get_restaurants_by_keyword(name):
     restaurants = RestaurantService.get_restaurants_by_keyword_name(name)

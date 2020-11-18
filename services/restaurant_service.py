@@ -68,10 +68,12 @@ class RestaurantService:
         specified already exists
         """
         db_session = current_app.config["DB_SESSION"]
-        restaurant = db_session.query(Restaurant).filter(
-                Restaurant.owner_email == owner_email
-            ).first()
-        
+        restaurant = (
+            db_session.query(Restaurant)
+            .filter(Restaurant.owner_email == owner_email)
+            .first()
+        )
+
         if restaurant is not None:
             return restaurant
         else:
@@ -243,16 +245,15 @@ class RestaurantService:
         db_session.commit()
         return True
 
-
     def delete_restaurant(restaurant_id):
         """
         This method deletes all data about a restaurant (also in other tables)
         """
 
         db_session = current_app.config["DB_SESSION"]
-        restaurant = db_session.query(Restaurant).filter(
-                Restaurant.id == restaurant_id
-            ).first()
+        restaurant = (
+            db_session.query(Restaurant).filter(Restaurant.id == restaurant_id).first()
+        )
 
         if restaurant is None:
             return True
@@ -273,9 +274,7 @@ class RestaurantService:
             MenuDish.restaurant_id == restaurant.id
         ).delete()
 
-        db_session.query(Review).filter(
-            Review.restaurant_id == restaurant.id
-        ).delete()
+        db_session.query(Review).filter(Review.restaurant_id == restaurant.id).delete()
 
         menus = db_session.query(Menu).filter(Menu.restaurant_id == restaurant.id).all()
         for menu in menus:
@@ -284,10 +283,10 @@ class RestaurantService:
             ).delete()
 
         db_session.query(Menu).filter(Menu.restaurant_id == restaurant.id).delete()
-        
+
         db_session.query(Restaurant).filter(Restaurant.id == restaurant.id).delete()
         db_session.commit()
-
+        return True
 
     @staticmethod
     def create_restaurant(data, max_seats):
@@ -353,7 +352,11 @@ class RestaurantService:
 
             db_session.add(new_menu)
             db_session.commit()
-        return db_session.query(Restaurant).filter_by(name=rest_name, lat=lat, lon=lon, phone=rest_phone).first()
+        return (
+            db_session.query(Restaurant)
+            .filter_by(name=rest_name, lat=lat, lon=lon, phone=rest_phone)
+            .first()
+        )
 
     @staticmethod
     def create_table(name, max_seats, restaurant_id):
@@ -370,7 +373,7 @@ class RestaurantService:
         db_session = current_app.config["DB_SESSION"]
         db_session.add(new_table)
         db_session.commit()
-        return True
+        return db_session.query(RestaurantTable).filter(RestaurantTable.id == new_table.id).first()
 
     @staticmethod
     def get_avg_rating_restaurant(restaurant_id: int) -> float:
@@ -385,7 +388,7 @@ class RestaurantService:
         rating_value = 0.0
         restaurant = db_session.query(Restaurant).filter_by(id=restaurant_id).first()
         if restaurant is None:
-           return -1
+            return -1
         reviews_list = (
             db_session.query(Review).filter_by(restaurant_id=restaurant_id).all()
         )
@@ -470,7 +473,8 @@ class RestaurantService:
         db_session = current_app.config["DB_SESSION"]
         db_session.add(new_dish)
         db_session.commit()
-        return True
+        return db_session.query(MenuDish).filter(MenuDish.id == new_dish.id).first()
+
 
     @staticmethod
     def create_restaurant_photo(url, caption, restaurant_id):
@@ -485,7 +489,7 @@ class RestaurantService:
         db_session = current_app.config["DB_SESSION"]
         db_session.add(new_photo)
         db_session.commit()
-        return True
+        return db_session.query(PhotoGallery).filter(PhotoGallery.id == new_photo.id).first()
 
     @staticmethod
     def create_review(review, stars, reviewer_email, restaurant_id):
@@ -501,7 +505,8 @@ class RestaurantService:
         db_session = current_app.config["DB_SESSION"]
         db_session.add(new_review)
         db_session.commit()
-        return True
+        return db_session.query(Review).filter(Review.id == new_review.id).first()
+
 
     @staticmethod
     def create_menu_photo(url, caption, menu_id):
@@ -516,4 +521,5 @@ class RestaurantService:
         db_session = current_app.config["DB_SESSION"]
         db_session.add(new_photo)
         db_session.commit()
-        return True
+        return db_session.query(MenuPhotoGallery).filter(MenuPhotoGallery.id == new_photo.id).first()
+
