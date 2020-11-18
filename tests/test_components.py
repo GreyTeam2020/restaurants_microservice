@@ -182,7 +182,7 @@ class TestComponents:
         response = client.get("/restaurants/id/" + email, follow_redirects=True)
         assert response.status_code == 200
         json_data = response.json
-        assert json_data["result"] == 1
+        assert json_data["id"] == 1
 
     def test_get_restaurant_id_by_owner_email_ko_404(self, client, db):
         """
