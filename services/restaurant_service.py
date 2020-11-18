@@ -243,16 +243,6 @@ class RestaurantService:
         db_session.commit()
         return True
 
-    @staticmethod
-    def delete_table(table_id):
-        """
-        This method deletes the specified table
-        """
-        db_session = current_app.config["DB_SESSION"]
-        db_session.query(RestaurantTable).filter_by(id=table_id).delete()
-        db_session.commit()
-        return True
-
 
     def delete_restaurant(restaurant_id):
         """
