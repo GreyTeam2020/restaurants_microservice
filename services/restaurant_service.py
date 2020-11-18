@@ -287,7 +287,7 @@ class RestaurantService:
         
         db_session.query(Restaurant).filter(Restaurant.id == restaurant.id).delete()
         db_session.commit()
-
+        return True
 
     @staticmethod
     def create_restaurant(data, max_seats):

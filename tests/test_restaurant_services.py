@@ -782,3 +782,48 @@ class TestRestaurantsServices:
         assert new_restaurant.name == "Bobby's"
 
         Utils.delete_restaurant(new_restaurant.id)
+
+
+
+
+
+
+    def test_delete_restaurant_all_info_ok(self):
+        """
+        test about the services restaurant to test the result of deleting a restaurant
+        and all its information (reivews, opening hours, ...)
+        :return:
+        """
+        new_restaurant = Utils.create_restaurant()
+        new_table = Utils.create_table(new_restaurant.id)
+        new_menu = Utils.create_menu(new_restaurant.id, "Italian food")
+        new_menu_photo = Utils.create_menu_photo(new_menu.id, "http://testphotomenu.com")
+        new_opening1 = Utils.create_openings(new_restaurant.id, 2)
+        new_opening2 = Utils.create_openings(new_restaurant.id, 3)
+        new_review = Utils.create_review(new_restaurant.id, 3)
+        new_photo = Utils.create_photo(new_restaurant.id, "http://testphoto.com")
+        new_dish = Utils.create_dish(new_restaurant.id, "Pizza")
+
+
+        response = RestaurantService.delete_restaurant(new_restaurant.id)
+        assert response is True
+
+        assert Utils.get_restaurant(new_restaurant.id) is None
+        assert Utils.get_table(new_table.id) is None
+        assert Utils.get_menu(new_menu.id) is None
+        assert Utils.get_menu(new_menu_photo.id) is None
+        assert len(Utils.get_opening_by_restaurant(new_restaurant.id)) == 0
+        assert Utils.get_review(new_review.id) is None
+        assert Utils.get_photo(new_photo.id) is None
+        assert Utils.get_dish(new_dish.id) is None
+
+
+    def test_delete_restaurant_all_info_not_found(self):
+        """
+        test about the services restaurant to test the result of deleting a 
+        dish that doesn't exist
+        :return:
+        """
+        response = RestaurantService.delete_restaurant(100)
+        assert response is True
+        assert Utils.get_restaurant(100) is None
