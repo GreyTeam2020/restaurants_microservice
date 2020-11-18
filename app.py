@@ -215,12 +215,12 @@ def create_restaurant():
     if RestaurantService.get_restaurant_with_info(name, phone, lat, lon) is not None:
         return error_message("409", "Restaurant already exists"), 409
 
-    rest = RestaurantService.create_restaurant(body, _max_seats)
-    json_resp = serialize(rest)
-    if rest is None:
+    restaurant = RestaurantService.create_restaurant(body, _max_seats)
+    json_resp = serialize(restaurant)
+    if restaurant is None:
         return _get_response("An error occur during the restaurants creation", 500)
     current_app.logger.debug("Result is: {}".format(json_resp))
-    return _get_response(json_resp, 200, True)
+    return _get_response(json_resp, 201, True)
 
 
 def create_table(restaurant_id):
@@ -229,8 +229,10 @@ def create_table(restaurant_id):
         return error_message("404", "Restaurant not found"), 404
 
     body = request.get_json()
-    RestaurantService.create_table(body["name"], body["max_seats"], restaurant_id)
-    return _get_response("Table added to restaurant", 200)
+    table = RestaurantService.create_table(
+        body["name"], body["max_seats"], restaurant_id
+    )
+    return serialize(table), 201
 
 
 def create_dish(restaurant_id):
@@ -239,8 +241,8 @@ def create_dish(restaurant_id):
         return error_message("404", "Restaurant not found"), 404
 
     body = request.get_json()
-    RestaurantService.create_dish(body["name"], body["price"], restaurant_id)
-    return _get_response("Dish added", 200)
+    dish = RestaurantService.create_dish(body["name"], body["price"], restaurant_id)
+    return serialize(dish), 201
 
 
 def create_photo(restaurant_id):
@@ -254,10 +256,10 @@ def create_photo(restaurant_id):
     if len(photo) != 0:
         return error_message("409", "URL already present"), 409
 
-    RestaurantService.create_restaurant_photo(
+    photo = RestaurantService.create_restaurant_photo(
         body["url"], body["caption"], restaurant_id
     )
-    return _get_response("Photo added", 200)
+    return serialize(photo), 201
 
 
 def create_review(restaurant_id):
@@ -267,11 +269,11 @@ def create_review(restaurant_id):
 
     body = request.get_json()
 
-    RestaurantService.create_review(
+    review = RestaurantService.create_review(
         body["review"], body["stars"], body["reviewer_email"], restaurant_id
     )
 
-    return _get_response("Review added", 200)
+    return serialize(review), 201
 
 
 def create_menu_photo(menu_id):
@@ -285,9 +287,9 @@ def create_menu_photo(menu_id):
     if photo is not None:
         return error_message("409", "URL already present"), 409
 
-    RestaurantService.create_menu_photo(body["url"], body["caption"], menu_id)
+    photo = RestaurantService.create_menu_photo(body["url"], body["caption"], menu_id)
 
-    return _get_response("Photo of the menu added", 200)
+    return serialize(photo), 201
 
 
 def get_avg_rating_restaurant(restaurant_id):

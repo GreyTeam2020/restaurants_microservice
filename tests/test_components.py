@@ -135,24 +135,24 @@ class TestComponents:
 
     def test_post_restaurant_create_ok(self, client, db):
         """
-        Test get create restaurant ok (200)
+        Test get create restaurant ok (201)
         """
         json_data = Utils.json_create_restaurant()
         response = client.post(
             "/restaurants/create", json=json_data, follow_redirects=True
         )
-        assert response.status_code == 200
+        assert response.status_code == 201
         Utils.delete_creation_restaurant(json_data)
 
     def test_post_restaurant_create_ko_409(self, client, db):
         """
-        Test get create restaurant ok (200)
+        Test get create restaurant ok (201)
         """
         json_data = Utils.json_create_restaurant()
         response = client.post(
             "/restaurants/create", json=json_data, follow_redirects=True
         )
-        assert response.status_code == 200
+        assert response.status_code == 201
 
         """
         Test get create restaurant ko (409) because is duplicate 
@@ -299,8 +299,8 @@ class TestComponents:
             json=body,
             follow_redirects=True,
         )
-        assert response.status_code == 200
-        assert response.json["result"] == "Dish added"
+        assert response.status_code == 201
+        assert response.json["name"] == body["name"]
 
         Utils.delete_dish_restaurant(restaurant.id)
         Utils.delete_restaurant(restaurant.id)
@@ -395,8 +395,8 @@ class TestComponents:
             json=body,
             follow_redirects=True,
         )
-        assert response.status_code == 200
-        assert response.json["result"] == "Table added to restaurant"
+        assert response.status_code == 201
+        assert response.json["name"] == body["name"]
 
         Utils.delete_table_restaurant(restaurant.id)
         Utils.delete_restaurant(restaurant.id)
@@ -539,8 +539,8 @@ class TestComponents:
         response = client.post(
             "/restaurants/menu/" + str(menu.id), json=body, follow_redirects=True
         )
-        assert response.status_code == 200
-        assert response.json["result"] == "Photo of the menu added"
+        assert response.status_code == 201
+        assert response.json["url"] == body["url"]
 
         Utils.delete_menu_photo_by_menu(menu.id)
         Utils.delete_menu(menu.id)
@@ -560,7 +560,7 @@ class TestComponents:
         json_data = response.json
         assert json_data["message"] == "Menu not found"
 
-    def test_post_photo_to_menu_not_found(self, client, db):
+    def test_post_photo_to_menu_url_already_used(self, client, db):
         """
         Test create a new photo of the menu but with an URL that already exists
         """
@@ -571,8 +571,8 @@ class TestComponents:
         response = client.post(
             "/restaurants/menu/" + str(menu.id), json=body, follow_redirects=True
         )
-        assert response.status_code == 200
-        assert response.json["result"] == "Photo of the menu added"
+        assert response.status_code == 201
+        assert response.json["url"] == body["url"]
 
         response = client.post(
             "/restaurants/menu/" + str(menu.id), json=body, follow_redirects=True
@@ -682,8 +682,8 @@ class TestComponents:
         response = client.post(
             "/restaurants/" + str(1) + "/reviews", json=body, follow_redirects=True
         )
-        assert response.status_code == 200
-        assert response.json["result"] == "Review added"
+        assert response.status_code == 201
+        assert response.json["stars"] == body["stars"]
         Utils.delete_review(4)
 
     def test_get_photos_restaurant_ok(self, client, db):
@@ -723,19 +723,9 @@ class TestComponents:
         response = client.post(
             "/restaurants/" + str(1) + "/photos", json=body, follow_redirects=True
         )
-        assert response.status_code == 200
-        assert response.json["result"] == "Photo added"
+        assert response.status_code == 201
+        assert response.json["url"] == body["url"]
 
-    def test_post_photo_to_restaurants(self, client, db):
-        """
-        Test create a new photo for restaurants
-        """
-        body = Utils.json_photo()
-        response = client.post(
-            "/restaurants/" + str(1) + "/photos", json=body, follow_redirects=True
-        )
-        assert response.status_code == 200
-        assert response.json["result"] == "Photo added"
         Utils.delete_photo(4)
 
     def test_post_photo_to_restaurants_ko_404(self, client, db):
@@ -757,7 +747,7 @@ class TestComponents:
         response = client.post(
             "/restaurants/" + str(1) + "/photos", json=body, follow_redirects=True
         )
-        assert response.status_code == 200
+        assert response.status_code == 201
         response = client.post(
             "/restaurants/" + str(1) + "/photos", json=body, follow_redirects=True
         )
