@@ -6,3 +6,4 @@ omit =
     __init__.py
     database.py
     .tox/*
+    background.py
