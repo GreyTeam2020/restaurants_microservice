@@ -249,7 +249,7 @@ def create_photo(restaurant_id):
     body = request.get_json()
 
     photo = RestaurantService.get_photo_with_url(body["url"])
-    if len(photo) is not 0:
+    if len(photo) != 0:
         return error_message("409", "URL already present"), 409
 
     RestaurantService.create_restaurant_photo(
