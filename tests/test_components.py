@@ -174,7 +174,24 @@ class TestComponents:
         )
         assert response.status_code == 400
 
-    '''
+    def test_get_restaurant_id_by_owner_email_ok(self, client, db):
+        """
+        Test get restaurant info by id
+        """
+        email = "ham.burger@email.com"
+        response = client.get("/restaurants/id/" + email, follow_redirects=True)
+        assert response.status_code == 200
+        json_data = response.json
+        assert json_data["result"] == 1
+
+    def test_get_restaurant_id_by_owner_email_ko_404(self, client, db):
+        """
+        Test get name restaurant not found by id ko (404)
+        """
+        email = "notexists@noemail.com"
+        response = client.get("/restaurants/id/" + email, follow_redirects=True)
+        assert response.status_code == 200
+
     def test_put_restaurant_update_ok_200(self, client, db):
         """
         Test put update restaurant ok (200)
@@ -212,7 +229,6 @@ class TestComponents:
         assert json_data['lat'] == (33.720586 * -1)
         assert json_data['lon'] == (11.408347 * -1)
         assert json_data['owner_email'] == "nick.miller@email.com" + changed
-        '''
 
 
     def test_get_dishes_ok_noresults(self, client, db):
@@ -556,3 +572,154 @@ class TestComponents:
         Utils.delete_menu_photo_by_menu(menu.id)
         Utils.delete_menu(menu.id)
         Utils.delete_restaurant(restaurant.id)
+
+    def test_get_calculate_rating_for_all_restaurant_ok(self, client, db):
+        """
+        Test get calculate rating for all restaurant
+        """
+        response = client.get("/restaurants/calculate_rating_for_all_restaurant", follow_redirects=True)
+        assert response.status_code == 200
+        json_data = response.json
+        assert json_data['result'] is True
+
+    def test_get_avg_rating_ok(self, client, db):
+        """
+        Test get calculate rating for all restaurant
+        """
+        response = client.get("/restaurants/" + str(1) + "/avg_rating", follow_redirects=True)
+        assert response.status_code == 200
+        json_data = response.json
+        assert round(json_data['result'], 1) == 2.7
+
+    def test_get_avg_rating_ko_404(self, client, db):
+        """
+        Test get calculate rating for all restaurant
+        """
+        response = client.get("/restaurants/" + str(123) + "/avg_rating", follow_redirects=True)
+        assert response.status_code == 404
+
+
+    def test_get_reviews_ok(self, client, db):
+        """
+        Test get calculate rating for all restaurant
+        """
+        response = client.get("/restaurants/" + str(1) + "/reviews", follow_redirects=True)
+        assert response.status_code == 200
+        json_data = response.json
+        assert len(json_data['Reviews']) == 3
+        assert json_data['Reviews'][0]['review'] == 'Excellent'
+        assert json_data['Reviews'][1]['review'] == 'Bad'
+        assert json_data['Reviews'][2]['review'] == 'Beautiful'
+        assert json_data['Reviews'][0]['stars'] == 4
+        assert json_data['Reviews'][1]['stars'] == 1
+        assert json_data['Reviews'][2]['stars'] == 3
+        assert json_data['Reviews'][0]['stars'] == 4
+        assert json_data['Reviews'][1]['stars'] == 1
+        assert json_data['Reviews'][2]['stars'] == 3
+        assert json_data['Reviews'][0]['reviewer_email'] == 'user@email.com'
+        assert json_data['Reviews'][1]['reviewer_email'] == 'user2@email.com'
+        assert json_data['Reviews'][2]['reviewer_email'] == 'user3@email.com'
+
+
+    def test_get_reviews_ko_404(self, client, db):
+        """
+        Test get reviews for restaurant not found
+        """
+        response = client.get("/restaurants/" + str(123) + "/reviews", follow_redirects=True)
+        assert response.status_code == 404
+
+    def test_get_random_reviews_ok(self, client, db):
+        """
+        Test get random reviews for restaurant
+        """
+        n = 3
+        response = client.get("/restaurants/" + str(1) + "/reviews/" + str(n), follow_redirects=True)
+        assert response.status_code == 200
+        json_data = response.json
+        assert len(json_data['Reviews']) == n
+
+    def test_get_random_reviews_ko_404(self, client, db):
+        """
+         Test get random reviews for restaurant not found
+        """
+        response = client.get("/restaurants/" + str(123) + "/reviews/" + str(10), follow_redirects=True)
+        assert response.status_code == 404
+
+    '''
+    POST
+    /restaurants/{restaurant_id}/reviews
+    Create a new review for the restaurant
+    '''
+    def test_post_review_to_restaurants(self, client, db):
+        """
+        Test create a new reviews for restaurants
+        """
+        body = Utils.json_review()
+        response = client.post("/restaurants/" + str(1) + "/reviews", json=body, follow_redirects=True)
+        assert response.status_code == 200
+        assert response.json["result"] == "Review added"
+        Utils.delete_review(4)
+
+
+    def test_get_photos_restaurant_ok(self, client, db):
+        """
+        Test Get the photos of a single restaurant
+        """
+        response = client.get("/restaurants/" + str(1) + "/photos", follow_redirects=True)
+        assert response.status_code == 200
+        json_data = response.json
+        assert len(json_data['photos']) == 3
+        assert json_data['photos'][0]['caption'] == 'Caption 1'
+        assert json_data['photos'][1]['caption'] == 'Caption 2'
+        assert json_data['photos'][2]['caption'] == 'Caption 3'
+        assert json_data['photos'][0]['restaurant_id'] == 1
+        assert json_data['photos'][1]['restaurant_id'] == 1
+        assert json_data['photos'][2]['restaurant_id'] == 1
+        assert json_data['photos'][0]['url'] == 'http://myrestaurant.com/photo1.jpg'
+        assert json_data['photos'][1]['url'] == 'http://myrestaurant.com/photo2.jpg'
+        assert json_data['photos'][2]['url'] == 'http://myrestaurant.com/photo3.jpg'
+
+    def test_get_photos_restaurant_ko_404(self, client, db):
+        """
+        Test get photos for restaurant not found
+        """
+        response = client.get("/restaurants/" + str(123) + "/photos/" + str(10), follow_redirects=True)
+        assert response.status_code == 404
+
+    def test_post_photo_to_restaurants(self, client, db):
+        """
+        Test create a new photo for restaurants
+        """
+        body = Utils.json_photo()
+        response = client.post("/restaurants/" + str(1) + "/photos", json=body, follow_redirects=True)
+        assert response.status_code == 200
+        assert response.json["result"] == "Photo added"
+
+    def test_post_photo_to_restaurants(self, client, db):
+        """
+        Test create a new photo for restaurants
+        """
+        body = Utils.json_photo()
+        response = client.post("/restaurants/" + str(1) + "/photos", json=body, follow_redirects=True)
+        assert response.status_code == 200
+        assert response.json["result"] == "Photo added"
+        Utils.delete_photo(4)
+
+    def test_post_photo_to_restaurants_ko_404(self, client, db):
+        """
+        Test create a new photo for restaurants not found
+        """
+        body = Utils.json_photo()
+        response = client.post("/restaurants/" + str(123) + "/photos", json=body, follow_redirects=True)
+        assert response.status_code == 404
+
+    def test_post_photo_to_restaurants_ko_409(self, client, db):
+        """
+        Test create a new photo for restaurants url already exists
+        """
+        body = Utils.json_photo()
+        print(body)
+        response = client.post("/restaurants/" + str(1) + "/photos", json=body, follow_redirects=True)
+        assert response.status_code == 200
+        response = client.post("/restaurants/" + str(1) + "/photos", json=body, follow_redirects=True)
+        assert response.status_code == 409
