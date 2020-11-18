@@ -723,3 +723,47 @@ class TestComponents:
         assert response.status_code == 200
         response = client.post("/restaurants/" + str(1) + "/photos", json=body, follow_redirects=True)
         assert response.status_code == 409
+
+
+    def test_delete_restaurant_all_info_ok(self, client, db):
+        """
+        Test delete a restaurant with all its information
+        """
+        new_restaurant = Utils.create_restaurant()
+        new_table = Utils.create_table(new_restaurant.id)
+        new_menu = Utils.create_menu(new_restaurant.id, "Italian food")
+        new_menu_photo = Utils.create_menu_photo(new_menu.id, "http://testphotomenu.com")
+        new_opening1 = Utils.create_openings(new_restaurant.id, 2)
+        new_opening2 = Utils.create_openings(new_restaurant.id, 3)
+        new_review = Utils.create_review(new_restaurant.id, 3)
+        new_photo = Utils.create_photo(new_restaurant.id, "http://testphoto.com")
+        new_dish = Utils.create_dish(new_restaurant.id, "Pizza")
+
+        response = client.delete(
+            "/restaurants/" + str(new_restaurant.id), follow_redirects=True
+        )
+
+        assert response.status_code == 200
+        assert response.json["result"] == "OK"
+
+        assert Utils.get_restaurant(new_restaurant.id) is None
+        assert Utils.get_table(new_table.id) is None
+        assert Utils.get_menu(new_menu.id) is None
+        assert Utils.get_menu(new_menu_photo.id) is None
+        assert len(Utils.get_opening_by_restaurant(new_restaurant.id)) == 0
+        assert Utils.get_review(new_review.id) is None
+        assert Utils.get_photo(new_photo.id) is None
+        assert Utils.get_dish(new_dish.id) is None
+
+    def test_delete_restaurant_all_info_not_found(self, client, db):
+        """
+        Test delete a restaurant with all its information for a restaurant that 
+        doesn't exist
+        """
+
+        response = client.delete(
+            "/restaurants/" + str(100), follow_redirects=True
+        )
+
+        assert response.status_code == 404
+        assert response.json["message"] == "Restaurant not found"

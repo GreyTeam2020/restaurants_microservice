@@ -820,8 +820,8 @@ class TestRestaurantsServices:
 
     def test_delete_restaurant_all_info_not_found(self):
         """
-        test about the services restaurant to test the result of deleting a 
-        dish that doesn't exist
+        test about the services restaurant to test the result of deleting a restaurant
+        and all its information for a restaurant that doesn't exist
         :return:
         """
         response = RestaurantService.delete_restaurant(100)
