@@ -795,3 +795,28 @@ class TestComponents:
 
         assert response.status_code == 404
         assert response.json["message"] == "Restaurant not found"
+
+    def test_get_table_ok(self, client, db):
+        """
+        Test search tables of a restaurant
+        """
+        restaurant = Utils.create_restaurant()
+        table = Utils.create_table(restaurant.id)
+
+        response = client.get(
+            "/restaurants/" + str(restaurant.id) + "/tables", follow_redirects=True
+        )
+        assert response.status_code == 200
+        json_data = response.json
+        assert len(json_data["tables"]) == 1
+
+        response = client.get(
+            "/restaurants/table/" + str(table.id) , follow_redirects=True
+        )
+        assert response.status_code == 200
+        json_data = response.json
+        assert json_data["id"] == table.id
+        assert json_data["restaurant"]["name"] == restaurant.name
+
+        Utils.delete_table(table.id)
+        Utils.delete_restaurant(restaurant.id)

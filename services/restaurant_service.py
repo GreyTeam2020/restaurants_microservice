@@ -176,6 +176,19 @@ class RestaurantService:
         return tables
 
     @staticmethod
+    def get_table(table_id):
+        """
+        This method returns tables of the specified restaurant
+        """
+        db_session = current_app.config["DB_SESSION"]
+        table = (
+            db_session.query(RestaurantTable)
+                .filter(table_id == RestaurantTable.id)
+                .first()
+        )
+        return table
+
+    @staticmethod
     def get_photos(restaurant_id):
         """
         This method returns photos of the specified restaurant
