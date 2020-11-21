@@ -349,6 +349,18 @@ def delete_restaurant(restaurant_id):
     RestaurantService.delete_restaurant(restaurant_id)
     return _get_response("OK", 200)
 
+def get_table(table_id):
+    if table_id is None:
+        return error_message("400", "table not specified"), 400
+    table = RestaurantService.get_table(table_id)
+    if table is None:
+        return error_message("404", "Table not found"), 404
+    restaurant = RestaurantService.get_restaurant(table.restaurant_id)
+    if restaurant is None:
+        return error_message("404", "Restaurant not found"), 404
+
+    total_table = {"name": table.name, "max_seats": table.max_seats, "available": table.available, "id": table.id, "restaurant": serialize(restaurant)}
+    return total_table
 
 # --------- END API definition --------------------------
 logging.basicConfig(level=logging.INFO)

@@ -361,6 +361,35 @@ paths:
             application/json:
               schema:
                   $ref: '#/components/schemas/Error'
+
+  /restaurants/table/{table_id}:
+    get:
+      tags:
+        - Tables
+      summary: Get the table with all restaurant info
+      operationId: app.get_table
+      parameters:
+        - name: table_id
+          in: path
+          description: Table's Unique identifier
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      responses:
+        200:
+          description: Return the restaurant
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TotalTable'
+        404:
+          description: Owner not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
   /restaurants/{restaurant_id}/tables:
     get:
       tags:
@@ -1248,3 +1277,34 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Openings'
+
+    TotalTable:
+      required:
+        - name
+        - max_seats
+        - available
+        - id
+        - restaurant
+      type: object
+      properties:
+        name:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Name of the table
+          example: "Table name"
+        max_seats:
+          type: integer
+          description: Maximun number of people at the table
+          example: 6
+        available:
+          type: boolean
+          description: The availability of th table
+          example: true
+        id:
+          type: integer
+          description: id of the table
+          example: 3
+        restaurant:
+          type: object
+          $ref: '#/components/schemas/Restaurant'

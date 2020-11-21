@@ -820,3 +820,26 @@ class TestRestaurantsServices:
         response = RestaurantService.delete_restaurant(100)
         assert response is True
         assert Utils.get_restaurant(100) is None
+
+    def test_get_tables_ok(self):
+        """
+        test about the services restaurant to test the result of get tables of a
+        restaurant
+        :return:
+        """
+        new_restaurant = Utils.create_restaurant()
+        new_table1 = Utils.create_table(new_restaurant.id)
+        new_table2 = Utils.create_table(new_restaurant.id)
+
+        tables = RestaurantService.get_tables(new_restaurant.id)
+        assert len(tables) == 2
+
+        query_table = RestaurantService.get_table(new_table1.id)
+
+        assert query_table.id == new_table1.id
+
+
+        Utils.delete_table(new_table1.id)
+        Utils.delete_table(new_table2.id)
+        Utils.delete_restaurant(new_restaurant.id)
+
