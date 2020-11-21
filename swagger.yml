@@ -1236,7 +1236,7 @@ components:
           type: string
           format: date-time
           description: when a user write a review for the restaurant
-          example: "15/06/2020 14:00"
+          example: "15/06/2020T14:00:00Z"
         reviewer_email:
           type: string
           description: Email of user who leave the review
