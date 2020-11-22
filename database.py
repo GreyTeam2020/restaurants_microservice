@@ -154,7 +154,7 @@ class Review(db):
 
     stars = Column(SqliteNumeric())
     review = Column(Text())
-    date = Column(DateTime(), default=datetime.now())
+    date = Column(DateTime(), default=datetime.now().replace(microsecond=0))
 
     # review, reletion with user table
     reviewer_email = Column(Unicode(128), nullable=False)
