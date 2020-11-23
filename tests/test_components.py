@@ -329,7 +329,7 @@ class TestComponents:
         dish = Utils.create_dish(restaurant.id, "Pizza")
 
         response = client.delete(
-            "/restaurants/menu/" + str(dish.id), follow_redirects=True
+            "/restaurants/dishes/" + str(dish.id), follow_redirects=True
         )
 
         assert response.status_code == 200

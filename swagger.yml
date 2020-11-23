@@ -745,7 +745,7 @@ paths:
             application/json:
               schema:
                   $ref: '#/components/schemas/Error'
-  /restaurants/menu/{dish_id}:
+  /restaurants/dishes/{dish_id}:
     delete:
       tags:
         - Dishes
