@@ -720,7 +720,7 @@ paths:
             application/json:
               schema:
                   $ref: '#/components/schemas/Error'
-  /restaurant/menu/{dish_id}:
+  /restaurants/menu/{dish_id}:
     delete:
       tags:
         - Dishes
@@ -746,7 +746,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Result'
-  /restaurant/table/{table_id}:
+  /restaurants/table/{table_id}:
     delete:
       tags:
         - Tables
