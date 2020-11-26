@@ -1,5 +1,5 @@
 ![Travis (.com)](https://travis-ci.com/GreyTeam2020/restaurants_microservice.svg?token=Z9fti5HUob4obw2a3b6K&branch=main)
-
+[![Coverage Status](https://coveralls.io/repos/github/GreyTeam2020/restaurants_microservice/badge.svg)](https://coveralls.io/github/GreyTeam2020/restaurants_microservice)
 ## Table of content
 
 - [Introduction]()
